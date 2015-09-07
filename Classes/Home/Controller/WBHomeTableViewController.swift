@@ -50,6 +50,10 @@ class WBHomeTableViewController: UITableViewController {
         cell!.textLabel?.text="text-message-\(indexPath.row)"
         return cell!
     }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        self.navigationController?.showViewController(WBTestViewController(), sender: self)
+    }
     /**/
 
     /*

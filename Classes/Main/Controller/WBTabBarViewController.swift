@@ -57,7 +57,7 @@ class WBTabBarViewController: UITabBarController {
         childView.tabBarItem.selectedImage=homeSelectedImage
         
         // 包装导航控制器
-        var navVc=UINavigationController(rootViewController: childView)
+        var navVc=WBNavigationViewController(rootViewController: childView)
         self.addChildViewController(navVc)
     }
 

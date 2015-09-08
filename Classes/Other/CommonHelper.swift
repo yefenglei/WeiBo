@@ -20,7 +20,7 @@ class CommonHelper{
     // 文字颜色
     static var fontColor:UIColor{
         get{
-            return UIColor(red: CGFloat(Double(arc4random_uniform(123))/255.0), green: CGFloat(Double(arc4random_uniform(123))/255.0), blue: CGFloat(Double(arc4random_uniform(123))/255.0), alpha: 1.0)
+            return UIColor(red: CGFloat(Double(123)/255.0), green: CGFloat(Double(123)/255.0), blue: CGFloat(Double(123)/255.0), alpha: 1.0)
         }
         
     }

@@ -12,12 +12,22 @@ class WBMessageCenterTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        self.navigationItem.rightBarButtonItem=UIBarButtonItem(title: "写私信", style: UIBarButtonItemStyle.Plain, target: self, action: "composeMsg:")
+        self.navigationItem.rightBarButtonItem?.enabled=false
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+    }
+    
+    func composeMsg(button:UIBarButtonItem){
+        
     }
 
     override func didReceiveMemoryWarning() {

@@ -10,6 +10,28 @@ import UIKit
 
 class WBNavigationViewController: UINavigationController {
 
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    override init(rootViewController:UIViewController){
+        super.init(rootViewController: rootViewController)
+        
+        // 设置整个项目所有item的主题样式
+        var barbuttom=UIBarButtonItem.appearance()
+        
+        // 设置普通状态
+        var textAttrs=[NSForegroundColorAttributeName:UIColor.orangeColor(),NSFontAttributeName:UIFont.systemFontOfSize(15)]
+        barbuttom.setTitleTextAttributes(textAttrs, forState: UIControlState.Normal)
+        // 设置不可用状态
+        var disabledTextAttrs=[NSForegroundColorAttributeName:UIColor.grayColor(),NSFontAttributeName:UIFont.systemFontOfSize(15)]
+        barbuttom.setTitleTextAttributes(disabledTextAttrs, forState: UIControlState.Disabled)
+    }
+    
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -28,21 +50,25 @@ class WBNavigationViewController: UINavigationController {
         }
         // 隐藏底部tabbar
         vc.hidesBottomBarWhenPushed=true
-        var backBtn=UIButton()
-        backBtn.addTarget(self, action: "back:", forControlEvents: UIControlEvents.TouchUpInside)
-        // 设置图片
-        backBtn.setBackgroundImage(UIImage(named: "navigationbar_back")!, forState: UIControlState.Normal)
-        backBtn.setBackgroundImage(UIImage(named: "navigationbar_back_highlighted")!, forState: UIControlState.Highlighted)
-        // 设置尺寸
-        backBtn.size=backBtn.currentBackgroundImage!.size
-        vc.navigationItem.leftBarButtonItem=UIBarButtonItem(customView: backBtn)
         
-        var moreBtn=UIButton()
-        moreBtn.addTarget(self, action: "more:", forControlEvents: UIControlEvents.TouchUpInside)
-        moreBtn.setBackgroundImage(UIImage(named: "navigationbar_more"), forState: UIControlState.Normal)
-        moreBtn.setBackgroundImage(UIImage(named: "navigationbar_more_highlighted"), forState: UIControlState.Highlighted)
-        moreBtn.size=moreBtn.currentBackgroundImage!.size
-        vc.navigationItem.rightBarButtonItem=UIBarButtonItem(customView: moreBtn)
+        vc.navigationItem.leftBarButtonItem=UIBarButtonItem.itemWithTarget(self,action:"back:", image: "navigationbar_back", highlightImage: "navigationbar_back_highlighted")
+        vc.navigationItem.rightBarButtonItem=UIBarButtonItem.itemWithTarget(self,action:"more:", image: "navigationbar_more", highlightImage: "navigationbar_more_highlighted")
+        
+//        var backBtn=UIButton()
+//        backBtn.addTarget(self, action: "back:", forControlEvents: UIControlEvents.TouchUpInside)
+//        // 设置图片
+//        backBtn.setBackgroundImage(UIImage(named: "navigationbar_back")!, forState: UIControlState.Normal)
+//        backBtn.setBackgroundImage(UIImage(named: "navigationbar_back_highlighted")!, forState: UIControlState.Highlighted)
+//        // 设置尺寸
+//        backBtn.size=backBtn.currentBackgroundImage!.size
+//        vc.navigationItem.leftBarButtonItem=UIBarButtonItem(customView: backBtn)
+//        
+//        var moreBtn=UIButton()
+//        moreBtn.addTarget(self, action: "more:", forControlEvents: UIControlEvents.TouchUpInside)
+//        moreBtn.setBackgroundImage(UIImage(named: "navigationbar_more"), forState: UIControlState.Normal)
+//        moreBtn.setBackgroundImage(UIImage(named: "navigationbar_more_highlighted"), forState: UIControlState.Highlighted)
+//        moreBtn.size=moreBtn.currentBackgroundImage!.size
+//        vc.navigationItem.rightBarButtonItem=UIBarButtonItem(customView: moreBtn)
         
         // 跳转
         super.showViewController(vc, sender: sender)

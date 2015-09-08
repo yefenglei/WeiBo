@@ -51,7 +51,7 @@ class WBTabBarViewController: UITabBarController {
         // 设置图片
         childView.tabBarItem.image=UIImage(named: image)
         var homeSelectedImage=UIImage(named: selectedImage)
-        childView.view.backgroundColor=CommonHelper.randomColor
+        //childView.view.backgroundColor=CommonHelper.randomColor
         // 声明:这张图片按照原来的样子显示，不要自动渲染成系统的颜色
         homeSelectedImage=homeSelectedImage?.imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal)
         childView.tabBarItem.selectedImage=homeSelectedImage

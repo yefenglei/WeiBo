@@ -26,6 +26,7 @@ class WBMessageCenterTableViewController: UITableViewController {
         super.viewWillAppear(animated)
     }
     
+    
     func composeMsg(button:UIBarButtonItem){
         
     }

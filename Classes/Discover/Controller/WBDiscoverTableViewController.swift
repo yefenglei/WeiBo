@@ -8,10 +8,18 @@
 
 import UIKit
 
-class WBDiscoverTableViewController: UITableViewController {
+class WBDiscoverTableViewController: UITableViewController,UITextFieldDelegate {
 
+    var searchBar:WBSearchBar!
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.view.userInteractionEnabled=true
+        
+        searchBar=WBSearchBar(frame: CGRectMake(0, 0, 300, 30))
+        searchBar.delegate=self
+        
+        self.navigationItem.titleView=searchBar
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -38,6 +46,14 @@ class WBDiscoverTableViewController: UITableViewController {
         // Return the number of rows in the section.
         return 0
     }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    
+    
 
     /*
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {

@@ -1,64 +1,23 @@
 //
-//  WBHomeTableViewController.swift
+//  WBDropDownContentTableViewController.swift
 //  WeiBo
 //
-//  Created by 叶锋雷 on 15/9/6.
+//  Created by 叶锋雷 on 15/9/10.
 //  Copyright (c) 2015年 叶锋雷. All rights reserved.
 //
 
 import UIKit
 
-class WBHomeTableViewController: UITableViewController {
+class WBDropDownContentTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.navigationItem.leftBarButtonItem=UIBarButtonItem.itemWithTarget(self,action: "friendSearch:", image: "navigationbar_friendsearch", highlightImage: "navigationbar_friendsearch_highlighted")
-        self.navigationItem.rightBarButtonItem=UIBarButtonItem.itemWithTarget(self,action: "pop:", image: "navigationbar_pop", highlightImage: "navigationbar_pop_highlighted")
-        
-        // 设置中间按钮
-        var titleButton=UIButton()
-        titleButton.width=150
-        titleButton.height=30
-        // 设置文字 图片
-        titleButton.setTitle("首页", forState: UIControlState.Normal)
-        titleButton.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal)
-        titleButton.titleLabel?.font=UIFont.systemFontOfSize(17)
-        titleButton.setImage(UIImage(named: "navigationbar_arrow_down"), forState: UIControlState.Normal)
-        
-        //var attrDict=[NSFontAttributeName:UIFont.systemFontOfSize(17)]
-        //var titleRect=(titleButton.titleLabel!.text! as NSString).textRectWithSize(titleButton.titleLabel!.size, attributes: attrDict)
-        
-        titleButton.imageEdgeInsets=UIEdgeInsets(top: 0, left: 100, bottom: 0, right: 0)
-        titleButton.addTarget(self, action: "titleClicked:", forControlEvents: UIControlEvents.TouchDragInside)
-        
-        self.navigationItem.titleView=titleButton
-        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
-    }
-    
-    func titleClicked(button:UIButton){
-        // 创建下拉菜单
-        var menu=WBDropDownMenu()
-        var tv=UITableView(frame: CGRectMake(0, 0, 0, 200))
-        menu.userInteractionEnabled=true
-        //menu.setContent(tv)
-        var vc=WBDropDownContentTableViewController()
-        vc.tableView=tv
-        menu.setContentViewController(vc)
-        menu.showFrom(button)
-    }
-    
-    func friendSearch(button:UIBarButtonItem){
-        WBLog.Log("left barbuttom friendSearch taped")
-    }
-    
-    func pop(button:UIBarButtonItem){
-        WBLog.Log("right barbuttom pop taped")
     }
 
     override func didReceiveMemoryWarning() {
@@ -77,25 +36,34 @@ class WBHomeTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
-        return 20
+        return 3
     }
-
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cellId:String="cell"
-        var cell = tableView.dequeueReusableCellWithIdentifier(cellId) as? UITableViewCell
+        let ID:String="cell"
+        var cell=tableView.dequeueReusableCellWithIdentifier(ID) as? UITableViewCell
         if(cell == nil){
-            cell=UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: cellId)
+            cell=UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: ID)
         }
-        // Configure the cell...
-        cell!.textLabel?.text="text-message-\(indexPath.row)"
+        if(0 == indexPath.row){
+            cell?.textLabel?.text="好友"
+        }else if(1 == indexPath.row){
+            cell?.textLabel?.text="密友"
+        }else if(2 == indexPath.row){
+            cell?.textLabel?.text="全部"
+        }
         return cell!
     }
-    
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        self.navigationController?.showViewController(WBTestViewController(), sender: self)
+
+    /*
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier", forIndexPath: indexPath) as! UITableViewCell
+
+        // Configure the cell...
+
+        return cell
     }
-    /**/
+    */
 
     /*
     // Override to support conditional editing of the table view.

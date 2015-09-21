@@ -14,7 +14,7 @@ class WBTestViewController: UIViewController {
         super.viewDidLoad()
         self.title="测试1控制器"
         self.view.backgroundColor=CommonHelper.randomColor
-        var btn=UIButton(frame: CGRectMake(60, 200, 200, 50))
+        let btn=UIButton(frame: CGRectMake(60, 200, 200, 50))
         btn.setTitle("Go to next scene", forState: UIControlState.Normal)
         btn.addTarget(self, action: "buttonClicked:", forControlEvents: UIControlEvents.TouchUpInside)
         self.view.addSubview(btn)
@@ -24,10 +24,14 @@ class WBTestViewController: UIViewController {
     }
     
     func buttonClicked(button:UIButton){
-        var test2=WBTest2ViewController()
+        let test2=WBTest2ViewController()
         test2.view.backgroundColor=CommonHelper.randomColor
         test2.title="测试2控制器"
-        self.navigationController?.showViewController(test2, sender: self)
+        if #available(iOS 8.0, *) {
+            self.navigationController?.showViewController(test2, sender: self)
+        } else {
+            self.navigationController?.pushViewController(test2, animated: true)
+        }
     }
 
     override func didReceiveMemoryWarning() {

@@ -28,7 +28,7 @@ class WBSearchBar: UITextField {
         self.background=UIImage(named:"searchbar_textfield_background")
         self.frame=frame
         
-        var searchIcon=UIImageView()
+        let searchIcon=UIImageView()
         searchIcon.height=30
         searchIcon.width=30
         searchIcon.image=UIImage(named: "searchbar_textfield_search_icon")
@@ -37,7 +37,7 @@ class WBSearchBar: UITextField {
         self.leftViewMode=UITextFieldViewMode.Always
     }
 
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     

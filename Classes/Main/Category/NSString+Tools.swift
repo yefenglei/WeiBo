@@ -10,6 +10,6 @@ import Foundation
 import UIKit
 extension NSString{
     func textRectWithSize(size:CGSize,attributes:NSDictionary)->CGRect{
-        return self.boundingRectWithSize(size, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: attributes as [NSObject : AnyObject], context: nil)
+        return self.boundingRectWithSize(size, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: attributes as? [String : AnyObject], context: nil)
     }
 }

@@ -31,6 +31,28 @@ extension UIView{
         }
     }
     
+    var centerX:CGFloat{
+        set{
+            var center:CGPoint=self.center
+            center.x=newValue
+            self.center=center
+        }
+        get{
+            return self.center.x
+        }
+    }
+    
+    var centerY:CGFloat{
+        set{
+            var center:CGPoint=self.center
+            center.y=newValue
+            self.center=center
+        }
+        get{
+            return self.center.y
+        }
+    }
+    
     var width:CGFloat{
         set{
             var frame:CGRect=self.frame

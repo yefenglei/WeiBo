@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window?.frame=UIScreen.mainScreen().bounds
         
         // 2.设置根控制器
-        var tabbarVc=WBTabBarViewController()
+        let tabbarVc=WBTabBarViewController()
         self.window?.rootViewController=tabbarVc
         
         // 4.显示窗口

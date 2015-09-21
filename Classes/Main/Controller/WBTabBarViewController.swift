@@ -13,15 +13,19 @@ class WBTabBarViewController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // 3.设置子控制器
-        var homeVc=WBHomeTableViewController()
+        // 1.设置子控制器
+        let homeVc=WBHomeTableViewController()
         addChildView(homeVc, title: "首页", image: "tabbar_home", selectedImage: "tabbar_home_selected")
-        var messageVc=WBMessageCenterTableViewController()
+        let messageVc=WBMessageCenterTableViewController()
         addChildView(messageVc, title: "消息", image: "tabbar_message_center", selectedImage: "tabbar_message_center_selected")
-        var discoverVc=WBDiscoverTableViewController()
+        let discoverVc=WBDiscoverTableViewController()
         addChildView(discoverVc, title: "发现", image: "tabbar_discover", selectedImage: "tabbar_discover_selected")
-        var profileVc=WBProfileTableViewController()
+        let profileVc=WBProfileTableViewController()
         addChildView(profileVc, title: "我", image: "tabbar_profile", selectedImage: "tabbar_profile_selected")
+        
+        // 2.更换系统自带的tabbar
+        self.setValue(WBTabBar(), forKeyPath: "tabBar")
+        
 
         
         // Do any additional setup after loading the view.
@@ -34,18 +38,18 @@ class WBTabBarViewController: UITabBarController {
     
     /// Add a new childview to tabbarviewcontroller.
     ///
-    /// :param: childVc 子控制器
-    /// :param: title 标题
-    /// :param: image 图片
-    /// :param: selectedImage 选中时的图片
-    /// :returns: void
+    /// - parameter childVc: 子控制器
+    /// - parameter title: 标题
+    /// - parameter image: 图片
+    /// - parameter selectedImage: 选中时的图片
+    /// - returns: void
     func addChildView(childView:UIViewController,title:String,image:String,selectedImage:String){
 //        childView.tabBarItem.title=title
 //        childView.navigationItem.title=title
         // 设置子控制器的文字
         childView.title=title
-        var textAttrs=[NSForegroundColorAttributeName:CommonHelper.fontColor]
-        var selectedTextAttrs=[NSForegroundColorAttributeName:UIColor.orangeColor()]
+        let textAttrs=[NSForegroundColorAttributeName:CommonHelper.fontColor]
+        let selectedTextAttrs=[NSForegroundColorAttributeName:UIColor.orangeColor()]
         childView.tabBarItem.setTitleTextAttributes(textAttrs, forState: UIControlState.Normal)
         childView.tabBarItem.setTitleTextAttributes(selectedTextAttrs, forState: UIControlState.Selected)
         // 设置图片
@@ -57,8 +61,12 @@ class WBTabBarViewController: UITabBarController {
         childView.tabBarItem.selectedImage=homeSelectedImage
         
         // 包装导航控制器
-        var navVc=WBNavigationViewController(rootViewController: childView)
+        let navVc=WBNavigationViewController(rootViewController: childView)
         self.addChildViewController(navVc)
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
     }
 
     /*

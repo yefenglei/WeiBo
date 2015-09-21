@@ -1,33 +1,33 @@
 //
-//  WBTest2ViewController.swift
+//  WBTestModalViewController.swift
 //  WeiBo
 //
-//  Created by 叶锋雷 on 15/9/6.
-//  Copyright (c) 2015年 叶锋雷. All rights reserved.
+//  Created by 叶锋雷 on 15/9/21.
+//  Copyright © 2015年 叶锋雷. All rights reserved.
 //
 
 import UIKit
 
-class WBTest2ViewController: UIViewController {
+class WBTestModalViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor=CommonHelper.randomColor
         let btn=UIButton(frame: CGRectMake(60, 200, 200, 50))
-        btn.setTitle("Go to home page", forState: UIControlState.Normal)
+        btn.setTitle("Go back home page", forState: UIControlState.Normal)
         btn.addTarget(self, action: "buttonClicked:", forControlEvents: UIControlEvents.TouchUpInside)
         self.view.addSubview(btn)
         // Do any additional setup after loading the view.
     }
-    
-    func buttonClicked(button:UIButton){
-        self.navigationController?.popToRootViewControllerAnimated(true)
-    }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
+    func buttonClicked(button:UIButton){
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
 
     /*
     // MARK: - Navigation

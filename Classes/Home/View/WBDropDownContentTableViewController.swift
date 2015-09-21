@@ -41,7 +41,7 @@ class WBDropDownContentTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let ID:String="cell"
-        var cell=tableView.dequeueReusableCellWithIdentifier(ID) as? UITableViewCell
+        var cell=tableView.dequeueReusableCellWithIdentifier(ID)
         if(cell == nil){
             cell=UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: ID)
         }

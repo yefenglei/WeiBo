@@ -10,7 +10,7 @@ import UIKit
 
 class WBNavigationViewController: UINavigationController {
 
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
@@ -18,13 +18,13 @@ class WBNavigationViewController: UINavigationController {
         super.init(rootViewController: rootViewController)
         
         // 设置整个项目所有item的主题样式
-        var barbuttom=UIBarButtonItem.appearance()
+        let barbuttom=UIBarButtonItem.appearance()
         
         // 设置普通状态
-        var textAttrs=[NSForegroundColorAttributeName:UIColor.orangeColor(),NSFontAttributeName:UIFont.systemFontOfSize(15)]
+        let textAttrs=[NSForegroundColorAttributeName:UIColor.orangeColor(),NSFontAttributeName:UIFont.systemFontOfSize(15)]
         barbuttom.setTitleTextAttributes(textAttrs, forState: UIControlState.Normal)
         // 设置不可用状态
-        var disabledTextAttrs=[NSForegroundColorAttributeName:UIColor.grayColor(),NSFontAttributeName:UIFont.systemFontOfSize(15)]
+        let disabledTextAttrs=[NSForegroundColorAttributeName:UIColor.grayColor(),NSFontAttributeName:UIFont.systemFontOfSize(15)]
         barbuttom.setTitleTextAttributes(disabledTextAttrs, forState: UIControlState.Disabled)
     }
     
@@ -43,7 +43,7 @@ class WBNavigationViewController: UINavigationController {
         // Dispose of any resources that can be recreated.
     }
     
-    override func showViewController(vc: UIViewController, sender: AnyObject!) {
+    override func showViewController(vc: UIViewController, sender: AnyObject?) {
 
         if(self.viewControllers.count==0){// rootview 不给它设置uibarbutton
             return
@@ -71,19 +71,23 @@ class WBNavigationViewController: UINavigationController {
 //        vc.navigationItem.rightBarButtonItem=UIBarButtonItem(customView: moreBtn)
         
         // 跳转
-        super.showViewController(vc, sender: sender)
+        if #available(iOS 8.0, *) {
+            super.showViewController(vc, sender: sender)
+        } else {
+            super.pushViewController(vc, animated: true)
+        }
     }
     /// back to last viewcontroller
     ///
-    /// :param: UIButton button
-    /// :returns: void
+    /// - parameter UIButton: button
+    /// - returns: void
     func back(button:UIButton){
         self.popViewControllerAnimated(true)
     }
     /// back to the rootViewController
     ///
-    /// :param: UIButton button
-    /// :returns: void
+    /// - parameter UIButton: button
+    /// - returns: void
     func more(button:UIButton){
         self.popToRootViewControllerAnimated(true)
     }

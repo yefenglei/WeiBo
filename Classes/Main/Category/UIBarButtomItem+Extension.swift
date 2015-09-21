@@ -11,13 +11,13 @@ import UIKit
 extension UIBarButtonItem{
     /// 创建一个UIBarButtomItem
     ///
-    /// :param: target NSObject 点击item调用哪个对象
-    /// :param: target NSObject 点击item调用target的方法
-    /// :param: image String 图片
-    /// :param: highlightImage String 高亮图片
-    /// :returns: UIBarButtonItem
+    /// - parameter target: NSObject 点击item调用哪个对象
+    /// - parameter target: NSObject 点击item调用target的方法
+    /// - parameter image: String 图片
+    /// - parameter highlightImage: String 高亮图片
+    /// - returns: UIBarButtonItem
     static func itemWithTarget(target:NSObject,action:String,image:String,highlightImage:String)->UIBarButtonItem{
-        var backBtn=UIButton()
+        let backBtn=UIButton()
         backBtn.addTarget(target, action: Selector(action), forControlEvents: UIControlEvents.TouchUpInside)
         // 设置图片
         backBtn.setBackgroundImage(UIImage(named: image)!, forState: UIControlState.Normal)

@@ -24,10 +24,14 @@ class WBProfileTableViewController: UITableViewController {
     
     /// go to setting page
     ///
-    /// :param: UIBarButtonItem button
-    /// :returns: void
+    /// - parameter UIBarButtonItem: button
+    /// - returns: void
     func setClicked(button:UIBarButtonItem){
-        self.navigationController?.showViewController(WBTestViewController(), sender: self)
+        if #available(iOS 8.0, *) {
+            self.navigationController?.showViewController(WBTestViewController(), sender: self)
+        } else {
+            self.navigationController?.pushViewController(WBTestViewController(), animated: true)
+        }
     }
 
     override func didReceiveMemoryWarning() {

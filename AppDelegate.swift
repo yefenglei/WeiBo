@@ -21,8 +21,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window?.frame=UIScreen.mainScreen().bounds
         
         // 2.设置根控制器
-        let tabbarVc=WBTabBarViewController()
-        self.window?.rootViewController=tabbarVc
+        let startVc=WBNewFeatureViewController()
+        self.window?.rootViewController=startVc
+        //let tabbarVc=WBTabBarViewController()
+        //self.window?.rootViewController=tabbarVc
         
         // 4.显示窗口
         self.window?.makeKeyAndVisible()

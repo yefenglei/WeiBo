@@ -21,10 +21,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window?.frame=UIScreen.mainScreen().bounds
         
         // 2.设置根控制器
-        let startVc=WBNewFeatureViewController()
-        self.window?.rootViewController=startVc
-        //let tabbarVc=WBTabBarViewController()
-        //self.window?.rootViewController=tabbarVc
+        let key="CFBundleVersion"
+        // 上一次使用的版本号（储存在沙盒中的版本号）
+        let lastVersion = CommonHelper.getUserDefaultValue(key) as? String
+        // 当前软件的版本号（从info.plist中获取）
+        let currentVersion=NSBundle.mainBundle().objectForInfoDictionaryKey(key)
+        if(lastVersion != nil && currentVersion!.isEqualToString(lastVersion!)){
+            let tabbarVc=WBAuthoViewController()//WBTabBarViewController()
+            self.window?.rootViewController=tabbarVc
+        }else{
+            // 两个版本号不一致
+            // 将新版本号存到沙盒里
+            CommonHelper.setUserDefaultValue(key, value: currentVersion!)
+            let startVc=WBNewFeatureViewController()
+            self.window?.rootViewController=startVc
+        }
+
         
         // 4.显示窗口
         self.window?.makeKeyAndVisible()

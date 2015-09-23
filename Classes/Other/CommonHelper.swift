@@ -28,6 +28,22 @@ class CommonHelper{
     static func Color(r:Double,g:Double,b:Double,a:Double)->UIColor{
         return UIColor(red: CGFloat(r/255.0), green: CGFloat(g/255.0), blue: CGFloat(b/255.0), alpha: CGFloat(a))
     }
+    /// 设置用户偏好数据
+    ///
+    /// - parameter key: String 键
+    /// - parameter value: String 值
+    /// - returns: void
+    static func setUserDefaultValue(key:String,value:AnyObject){
+        NSUserDefaults.standardUserDefaults().setObject(value, forKey: key)
+        NSUserDefaults.standardUserDefaults().synchronize()
+    }
+    /// 获取用户偏好数据
+    ///
+    /// - parameter key: String 键
+    /// - returns: NSObject?
+    static func getUserDefaultValue(key:String)->AnyObject?{
+        return NSUserDefaults.standardUserDefaults().valueForKey(key)
+    }
 }
 
 

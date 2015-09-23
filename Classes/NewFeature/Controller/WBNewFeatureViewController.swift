@@ -33,6 +33,10 @@ class WBNewFeatureViewController: UIViewController,UIScrollViewDelegate {
             // 显示图片
             imageView.image=UIImage(named: "new_feature_\(i+1)")
             scrollView.addSubview(imageView)
+            // 如果是最后一个imageView，就往里面添加其他内容
+            if(newFeatureCount-1 == i){
+                setLastImageView(imageView)
+            }
         }
         
         // 3.设置scrollView的其他属性
@@ -53,6 +57,49 @@ class WBNewFeatureViewController: UIViewController,UIScrollViewDelegate {
         
         
         // Do any additional setup after loading the view.
+    }
+    
+    /// 初始化最后一个imageView
+    ///
+    /// - parameter imageView: UIImageView 最后一个imageView
+    /// - returns: void
+    func setLastImageView(imageView:UIImageView){
+        // 开启交互功能
+        imageView.userInteractionEnabled=true
+        // 1.分享给大家
+        let shareButton=UIButton()
+        shareButton.setImage(UIImage(named: "new_feature_share_false"), forState: UIControlState.Normal)
+        shareButton.setImage(UIImage(named: "new_feature_share_true"), forState: UIControlState.Selected)
+        shareButton.setTitle("分享给大家", forState: UIControlState.Normal)
+        shareButton.width=200
+        shareButton.height=30
+        shareButton.centerX=imageView.width*0.5
+        shareButton.centerY=imageView.height*0.65
+        shareButton.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal)
+        shareButton.titleLabel?.font=UIFont.systemFontOfSize(15)
+        shareButton.imageEdgeInsets=UIEdgeInsetsMake(0, 0, 0, 10)
+        shareButton.addTarget(self, action: "shareClicked:", forControlEvents: UIControlEvents.TouchUpInside)
+        imageView.addSubview(shareButton)
+        // 2.开始微博
+        let startButton=UIButton()
+        startButton.setBackgroundImage(UIImage(named: "new_feature_finish_button"), forState: UIControlState.Normal)
+        startButton.setBackgroundImage(UIImage(named: "new_feature_finish_button_highlighted"), forState: UIControlState.Highlighted)
+        startButton.size=startButton.currentBackgroundImage!.size
+        startButton.centerX=imageView.width*0.5
+        startButton.centerY=imageView.height*0.75
+        startButton.setTitle("开始微博", forState: UIControlState.Normal)
+        startButton.addTarget(self, action: "startClicked:", forControlEvents: UIControlEvents.TouchUpInside)
+        imageView.addSubview(startButton)
+    }
+    
+    func shareClicked(button:UIButton){
+        // 状态取反
+        button.selected = !button.selected
+    }
+    
+    func startClicked(button:UIButton){
+        self.removeFromParentViewController()
+        UIApplication.sharedApplication().keyWindow?.rootViewController = WBTabBarViewController()
     }
 
     override func didReceiveMemoryWarning() {

@@ -44,6 +44,7 @@ class CommonHelper{
     static func getUserDefaultValue(key:String)->AnyObject?{
         return NSUserDefaults.standardUserDefaults().valueForKey(key)
     }
+
 }
 
 

@@ -12,6 +12,7 @@ class WBAccount:NSObject,NSCoding{
     var expires_in:Int64
     var uid:String
     var create_time:NSDate
+    var name:String?
     init(dictData:NSDictionary){
         self.access_token=dictData.valueForKey("access_token") as! String
         self.expires_in=(dictData.valueForKey("expires_in") as! NSNumber).longLongValue

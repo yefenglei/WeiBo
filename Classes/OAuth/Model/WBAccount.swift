@@ -36,7 +36,7 @@ class WBAccount:NSObject,NSCoding{
     func encodeWithCoder(enCoder: NSCoder) {
         enCoder.encodeObject(self.access_token, forKey: "access_token")
         enCoder.encodeInt64(self.expires_in, forKey: "expires_in")
-        enCoder.encodeObject(self.access_token, forKey: "uid")
+        enCoder.encodeObject(self.uid, forKey: "uid")
         enCoder.encodeObject(self.create_time, forKey: "create_time")
     }
     

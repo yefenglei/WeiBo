@@ -12,36 +12,19 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        self.navigationItem.leftBarButtonItem=UIBarButtonItem.itemWithTarget(self,action: "friendSearch:", image: "navigationbar_friendsearch", highlightImage: "navigationbar_friendsearch_highlighted")
-        self.navigationItem.rightBarButtonItem=UIBarButtonItem.itemWithTarget(self,action: "pop:", image: "navigationbar_pop", highlightImage: "navigationbar_pop_highlighted")
-        
-        // 设置中间按钮
-        let titleButton=UIButton()
-        titleButton.width=150
-        titleButton.height=30
-        // 设置文字 图片
-        titleButton.setTitle("首页", forState: UIControlState.Normal)
-        titleButton.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal)
-        titleButton.titleLabel?.font=UIFont.systemFontOfSize(17)
-        titleButton.setImage(UIImage(named: "navigationbar_arrow_down"), forState: UIControlState.Normal)
-        titleButton.setImage(UIImage(named: "navigationbar_arrow_up"), forState: UIControlState.Selected)
-        
-        //var attrDict=[NSFontAttributeName:UIFont.systemFontOfSize(17)]
-        //var titleRect=(titleButton.titleLabel!.text! as NSString).textRectWithSize(titleButton.titleLabel!.size, attributes: attrDict)
-        
-        titleButton.imageEdgeInsets=UIEdgeInsets(top: 0, left: 100, bottom: 0, right: 0)
-        titleButton.addTarget(self, action: "titleClicked:", forControlEvents: UIControlEvents.TouchUpInside)
-        
-        self.navigationItem.titleView=titleButton
-        
+        //获取用户信息（昵称）
+        setupUserInfo();
+        //设置导航栏内容
+        setupNav();
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
-    
+    ///  标题点击
+    ///
+    ///  - parameter button:
     func titleClicked(button:UIButton){
         // 创建下拉菜单
         let menu=WBDropDownMenu()
@@ -62,6 +45,78 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
     
     func pop(button:UIBarButtonItem){
         WBLog.Log("right barbuttom pop taped")
+    }
+    
+    ///  UIRefreshControl进入刷新状态：加载最新的数据
+    ///
+    ///  - parameter control: 下拉刷新控件
+    func loadNewStatus(control:UIRefreshControl){
+        // 1.请求管理者
+        let mgr=AFHTTPRequestOperationManager()
+        // 2.拼接请求参数
+        let account=WBAccountTool.account!
+        let params=NSMutableDictionary()
+        params["access_token"]=account.access_token
+        
+        //取出最前面的微博（最新的微博，ID最大的微博）
+        
+    }
+///  集成下拉刷新控件
+    func setupDownRefresh(){
+        // 1.添加刷新控件
+        let control=UIRefreshControl()
+        // 只有用户通过手动下拉刷新，才会触发UIControlEventValueChanged事件
+        control.addTarget(self, action: "loadNewStatus:", forControlEvents: UIControlEvents.ValueChanged)
+        self.tableView.addSubview(control)
+        // 2.马上进入刷新状态(仅仅是显示刷新状态，并不会触发UIControlEventValueChanged事件)
+        control.beginRefreshing()
+        // 3.马上加载数据
+        self.loadNewStatus(control)
+    }
+    
+    ///  获取用户信息（昵称）
+    func setupUserInfo(){
+        // 1.请求管理者
+        let mgr=AFHTTPRequestOperationManager()
+        
+        // 2.拼接请求参数
+        let account=WBAccountTool.account!
+        let params=NSMutableDictionary()
+        params["access_token"]=account.access_token
+        params["uid"]=account.uid
+        
+        // 3.发送请求
+        mgr.GET("https://api.weibo.com/2/users/show.json", parameters: params, success: { (operation, responseObject) -> Void in
+            // 标题按钮
+            let titleButtion=self.navigationItem.titleView as! UIButton
+            // 设置名字
+            let user=WBUser(keyValues: responseObject)
+            titleButtion.setTitle(user.name, forState: UIControlState.Normal)
+            // 存储昵称到沙盒中
+            account.name=user.name
+            WBAccountTool.saveAccount(account)
+            
+            }) { (operation, error) -> Void in
+                NSLog("请求失败：\(error)")
+        }
+    }
+///  设置导航栏内容
+    func setupNav(){
+        /* 设置导航栏上面的内容 */
+        self.navigationItem.leftBarButtonItem=UIBarButtonItem.itemWithTarget(self,action: "friendSearch:", image: "navigationbar_friendsearch", highlightImage: "navigationbar_friendsearch_highlighted")
+        self.navigationItem.rightBarButtonItem=UIBarButtonItem.itemWithTarget(self,action: "pop:", image: "navigationbar_pop", highlightImage: "navigationbar_pop_highlighted")
+        // 设置中间标题按钮
+        let titleButton=WBTitleButton()
+        // 设置图片和文字
+        var name=WBAccountTool.account!.name
+        name = (name==nil) ? name : "首页"
+        titleButton.setTitle(name, forState: UIControlState.Normal)
+        //var attrDict=[NSFontAttributeName:UIFont.systemFontOfSize(17)]
+        //var titleRect=(titleButton.titleLabel!.text! as NSString).textRectWithSize(titleButton.titleLabel!.size, attributes: attrDict)
+        // 监听标题点击
+        titleButton.addTarget(self, action: "titleClicked:", forControlEvents: UIControlEvents.TouchUpInside)
+        
+        self.navigationItem.titleView=titleButton
     }
 
     override func didReceiveMemoryWarning() {

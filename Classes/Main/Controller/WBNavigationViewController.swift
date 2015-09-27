@@ -54,21 +54,6 @@ class WBNavigationViewController: UINavigationController {
         vc.navigationItem.leftBarButtonItem=UIBarButtonItem.itemWithTarget(self,action:"back:", image: "navigationbar_back", highlightImage: "navigationbar_back_highlighted")
         vc.navigationItem.rightBarButtonItem=UIBarButtonItem.itemWithTarget(self,action:"more:", image: "navigationbar_more", highlightImage: "navigationbar_more_highlighted")
         
-//        var backBtn=UIButton()
-//        backBtn.addTarget(self, action: "back:", forControlEvents: UIControlEvents.TouchUpInside)
-//        // 设置图片
-//        backBtn.setBackgroundImage(UIImage(named: "navigationbar_back")!, forState: UIControlState.Normal)
-//        backBtn.setBackgroundImage(UIImage(named: "navigationbar_back_highlighted")!, forState: UIControlState.Highlighted)
-//        // 设置尺寸
-//        backBtn.size=backBtn.currentBackgroundImage!.size
-//        vc.navigationItem.leftBarButtonItem=UIBarButtonItem(customView: backBtn)
-//        
-//        var moreBtn=UIButton()
-//        moreBtn.addTarget(self, action: "more:", forControlEvents: UIControlEvents.TouchUpInside)
-//        moreBtn.setBackgroundImage(UIImage(named: "navigationbar_more"), forState: UIControlState.Normal)
-//        moreBtn.setBackgroundImage(UIImage(named: "navigationbar_more_highlighted"), forState: UIControlState.Highlighted)
-//        moreBtn.size=moreBtn.currentBackgroundImage!.size
-//        vc.navigationItem.rightBarButtonItem=UIBarButtonItem(customView: moreBtn)
         
         // 跳转
         if #available(iOS 8.0, *) {

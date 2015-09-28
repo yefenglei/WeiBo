@@ -36,7 +36,7 @@ class WBStatusFrame:NSObject{
             self._status=newValue
             let user=newValue.user
             // cell的宽度
-            var cellW=UIScreen.mainScreen().bounds.size.width
+            let cellW=UIScreen.mainScreen().bounds.size.width
             /* 原创微博 */
             
             /** 头像 */
@@ -71,13 +71,66 @@ class WBStatusFrame:NSObject{
             self.contentLabelF=CGRectMake(contentX, contentY, contentSize.width, contentSize.height)
             
             /** 配图 */
-            let originalH:CGFloat=0
+            var originalH:CGFloat=0
             if(status.pic_urls.count>0){
                 // 有配图
                 let photosX=contentX
                 let photosY=CGRectGetMaxY(self.contentLabelF)+WBStatusCellBorderW
-                
+                let photosSize=WBStatusPhotosView.size(status.pic_urls.count)
+                self.photosViewF = CGRectMake(photosX, photosY, photosSize.width, photosSize.height)
+                originalH=CGRectGetMaxY(self.photosViewF)+WBStatusCellBorderW
+            }else{
+                // 没有配图
+                originalH=CGRectGetMaxY(self.contentLabelF) + WBStatusCellBorderW
             }
+            /** 原创微博整体 */
+            let originalX:CGFloat=0
+            let originalY:CGFloat=WBStatusCellMargin
+            let originalW:CGFloat=cellW
+            self.originalViewF=CGRectMake(originalX, originalY, originalW, originalH)
+            var toolbarY:CGFloat=0
+            /* 被转发微博 */
+            if(status.retweeted_status != nil){
+                let retweeted_status:WBStatus=status.retweeted_status!
+                let retweeted_status_user=retweeted_status.user
+                /** 被转发微博正文 */
+                let retweetContentX = WBStatusCellBorderW;
+                let retweetContentY = WBStatusCellBorderW;
+                let retweetContent = NSString(format: "@%@ : %@", retweeted_status_user.name,retweeted_status.text)
+                let retweetContentSize = retweetContent.size(WBStatusCellRetweetContentFont, maxW: maxW)
+                self.retweetContentLabelF=CGRectMake(retweetContentX, retweetContentY, retweetContentSize.width, retweetContentSize.height)
+                
+                /** 被转发微博配图 */
+                var retweetH:CGFloat=0
+                if(retweeted_status.pic_urls.count > 0){
+                    // 转发微博有配图
+                    let retweetPhotosX=retweetContentX
+                    let retweetPhotosY=CGRectGetMaxY(self.retweetContentLabelF) + WBStatusCellBorderW
+                    let retweetPhotosSize=WBStatusPhotosView.size(retweeted_status.pic_urls.count)
+                    self.retweetPhotosViewF=CGRectMake(retweetPhotosX, retweetPhotosY, retweetPhotosSize.width, retweetPhotosSize.height)
+                    retweetH=CGRectGetMaxY(self.retweetPhotosViewF) + WBStatusCellBorderW
+                }else{
+                    // 转发微博没有配图
+                    retweetH=CGRectGetMaxY(self.retweetContentLabelF) + WBStatusCellBorderW
+                }
+                /** 被转发微博整体 */
+                let retweetX:CGFloat=0
+                let retweetY=CGRectGetMaxY(self.originalViewF)
+                let retweetW=cellW
+                self.retweetViewF=CGRectMake(retweetX, retweetY, retweetW, retweetH)
+                toolbarY = CGRectGetMaxY(self.retweetViewF)
+            }else{
+                toolbarY=CGRectGetMaxY(self.originalViewF)
+            }
+            
+            /** 工具条 */
+            let toolbarX:CGFloat = 0;
+            let toolbarW:CGFloat = cellW;
+            let toolbarH:CGFloat = 35;
+            self.toolbarF=CGRectMake(toolbarX, toolbarY, toolbarW, toolbarH)
+            
+            /* cell的高度 */
+            self.cellHeight = CGRectGetMaxY(self.toolbarF)
         }
     }
     /** 原创微博整体 */
@@ -107,4 +160,20 @@ class WBStatusFrame:NSObject{
     var toolbarF:CGRect!
     /** cell的高度 */
     var cellHeight:CGFloat!
+
+    ///  将HWStatus模型转为HWStatusFrame模型
+    ///
+    ///  - parameter statuses: HWStatus模型数组
+    ///
+    ///  - returns: HWStatusFrame模型数组
+    static func statusFrames(statuses:[WBStatus])->[WBStatusFrame]{
+        var frames=[WBStatusFrame]()
+        for status:WBStatus in statuses{
+            let f=WBStatusFrame()
+            f.status=status
+            frames.append(f)
+        }
+        return frames
+    }
+    
 }

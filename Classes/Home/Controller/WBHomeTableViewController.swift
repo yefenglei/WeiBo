@@ -9,7 +9,7 @@
 import UIKit
 
 class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
-
+    lazy var statusFrames=NSMutableArray()
     override func viewDidLoad() {
         super.viewDidLoad()
         //获取用户信息（昵称）
@@ -59,8 +59,27 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
         params["access_token"]=account.access_token
         
         //取出最前面的微博（最新的微博，ID最大的微博）
+        let firstStatusF=self.statusFrames.firstObject as? WBStatusFrame
+        if(firstStatusF != nil){
+            // 若指定此参数，则返回ID比since_id大的微博（即比since_id时间晚的微博），默认为0
+            params["since_id"]=firstStatusF!.status.idstr
+        }
+        // 3.发送请求
+        mgr.GET("https://api.weibo.com/2/statuses/friends_timeline.json", parameters: params, success: { (operation, responseObject) -> Void in
+            // 请求成功
+            // 将 "微博字典"数组 转为 "微博模型"数组
+            let newStatuses=WBStatus.objectArrayWithKeyValuesArray(responseObject["statuses"])
+            // 将 HWStatus数组 转为 HWStatusFrame数组
+            
+            
+            }) { (operation, error) -> Void in
+                // 请求失败
+        }
         
     }
+    
+    
+    
 ///  集成下拉刷新控件
     func setupDownRefresh(){
         // 1.添加刷新控件

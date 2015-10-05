@@ -9,18 +9,21 @@
 import UIKit
 
 class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
-    lazy var statusFrames=NSMutableArray()
+    var statusFrames=NSMutableArray()
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.tableView.backgroundColor=CommonHelper.Color(211, g: 211, b: 211, a: 1)
         //获取用户信息（昵称）
         setupUserInfo();
         //设置导航栏内容
         setupNav();
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+        // 集成下拉刷新控件
+        self.setupDownRefresh()
+        
+        // 集成上拉刷新控件
+        self.setupUpRefresh()
+        
     }
     ///  标题点击
     ///
@@ -68,16 +71,69 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
         mgr.GET("https://api.weibo.com/2/statuses/friends_timeline.json", parameters: params, success: { (operation, responseObject) -> Void in
             // 请求成功
             // 将 "微博字典"数组 转为 "微博模型"数组
-            let newStatuses=WBStatus.objectArrayWithKeyValuesArray(responseObject["statuses"])
+            let newStatuses:NSMutableArray=WBStatus.objectArrayWithKeyValuesArray(responseObject["statuses"])
             // 将 HWStatus数组 转为 HWStatusFrame数组
+            let newFrames=WBStatusFrame.statusFrames(newStatuses)
+            
+            // 将最新的微博数据，添加到总数组的最前面
+            let range=NSMakeRange(0, newFrames.count)
+            let set=NSIndexSet(indexesInRange: range)
+            self.statusFrames.insertObjects(newFrames, atIndexes: set)
+            
+            // 刷新表格
+            self.tableView.reloadData()
+            
+            // 结束刷新
+            control.endRefreshing()
+            
+            //显示最新微博的数量
+            self.showNewStatusCount(newStatuses.count)
             
             
             }) { (operation, error) -> Void in
                 // 请求失败
+                control.endRefreshing()
         }
         
     }
     
+///  加载更多的微博数据
+    func loadMoreStatus(){
+        // 1.请求管理者
+        let mgr=AFHTTPRequestOperationManager()
+        
+        // 2.拼接请求参数
+        let account=WBAccountTool.account
+        let params=NSMutableDictionary()
+        params["access_token"]=account?.access_token
+        
+        // 取出最后面的微博（最新的微博，ID最大的微博）
+        let lastStatusF=self.statusFrames.lastObject as? WBStatusFrame
+        if(lastStatusF != nil){
+            // 若指定此参数，则返回ID小于或等于max_id的微博，默认为0。
+            // id这种数据一般都是比较大的，一般转成整数的话，最好是long long类型
+            let maxId:Int64=Int64(lastStatusF!.status.idstr)!-1
+            params["max_id"]=maxId.description
+        }
+        
+        // 3.发送请求
+        mgr.GET("https://api.weibo.com/2/statuses/friends_timeline.json", parameters: params, success: { (operation, responseObject) -> Void in
+            // 将 "微博字典"数组 转为 "微博模型"数组
+            let newStatuses=WBStatus.objectArrayWithKeyValuesArray(responseObject["statuses"])
+            // 将 HWStatus数组 转为 HWStatusFrame数组
+            let newFrames=WBStatusFrame.statusFrames(newStatuses)
+            // 将更多的微博数据，添加到总数组的最后面
+            self.statusFrames.addObjectsFromArray(newFrames)
+            // 刷新表格
+            self.tableView.reloadData()
+            // 结束刷新(隐藏footer)
+            self.tableView.tableFooterView?.hidden=true
+            
+            
+            }) { (operation, error) -> Void in
+                self.tableView.tableFooterView?.hidden=true
+        }
+    }
     
     
 ///  集成下拉刷新控件
@@ -91,6 +147,13 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
         control.beginRefreshing()
         // 3.马上加载数据
         self.loadNewStatus(control)
+    }
+    
+///  集成上拉刷新控件
+    func setupUpRefresh(){
+        let footer=WBLoadMoreFooter.footer()
+        footer.hidden=true
+        self.tableView.tableFooterView=footer
     }
     
     ///  获取用户信息（昵称）
@@ -137,6 +200,54 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
         
         self.navigationItem.titleView=titleButton
     }
+    
+    ///  显示最新微博的数量
+    ///
+    ///  - parameter count: 最新微博的数量
+    func showNewStatusCount(count:Int){
+        // 刷新成功(清空图标数字)
+        self.tabBarItem.badgeValue=nil
+        UIApplication.sharedApplication().applicationIconBadgeNumber=0
+        
+        // 1.创建label
+        let label=UILabel()
+        label.backgroundColor=UIColor(patternImage: UIImage(named: "timeline_new_status_background")!)
+        label.width=UIScreen.mainScreen().bounds.size.width
+        label.height=35
+        
+        // 2.设置其他属性
+        if(count==0){
+            label.text="没有新的微博数据，稍后再试"
+        }else{
+            label.text="共有\(count)条新的微博数据"
+        }
+        label.textColor=UIColor.whiteColor()
+        label.textAlignment=NSTextAlignment.Center
+        label.font=UIFont.systemFontOfSize(16)
+        
+        // 3.添加
+        label.y=64-label.height
+        // 将label添加到导航控制器的view中，并且是盖在导航栏下边
+        self.navigationController?.view.insertSubview(label, belowSubview: self.navigationController!.navigationBar)
+        
+        // 4.动画
+        // 先利用1s的时间，让label往下移动一段距离
+        let duration:CGFloat=1.0
+        UIView.animateWithDuration(NSTimeInterval(duration), animations: { () -> Void in
+            label.transform=CGAffineTransformMakeTranslation(0, label.height)
+            }, completion: { (finished) -> Void in
+            // 延迟1s后，再利用1s的时间，让label往上移动一段距离（回到一开始的状态）
+                let delay:CGFloat = 1.0
+                // UIViewAnimationOptions.CurveLinear:匀速
+                UIView.animateWithDuration(NSTimeInterval(duration), delay: NSTimeInterval(delay), options: UIViewAnimationOptions.CurveLinear, animations: { () -> Void in
+                    label.transform=CGAffineTransformIdentity
+                    }, completion: { (finished) -> Void in
+                        label.removeFromSuperview()
+                })
+        })
+        
+        // 如果某个动画执行完毕后，又要回到动画执行前的状态，建议使用transform来做动画
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -154,19 +265,43 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
-        return 20
+        return self.statusFrames.count
     }
 
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cellId:String="cell"
-        var cell = tableView.dequeueReusableCellWithIdentifier(cellId)
-        if(cell == nil){
-            cell=UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: cellId)
+        // 获得cell
+        let cell:WBStatusCell=WBStatusCell.cellWithTabelView(tableView)
+        
+        // 给cell传递模型数据
+        cell.statusFrame=self.statusFrames[indexPath.row] as? WBStatusFrame
+        
+        return cell
+    }
+    
+    override func scrollViewDidScroll(scrollView: UIScrollView) {
+        //    scrollView == self.tableView == self.view
+        // 如果tableView还没有数据，就直接返回
+        if(self.statusFrames.count == 0 || self.tableView.tableFooterView!.hidden == false){
+            return
         }
-        // Configure the cell...
-        cell!.textLabel?.text="text-message-\(indexPath.row)"
-        return cell!
+        
+        let offsetY:CGFloat=scrollView.contentOffset.y
+        // 当最后一个cell完全显示在眼前时，contentOffset的y值
+        let judgeOffsetY:CGFloat=scrollView.contentSize.height + scrollView.contentInset.bottom - scrollView.height - self.tableView.tableFooterView!.height
+        if(offsetY >= judgeOffsetY){
+            // 最后一个cell完全进入视野范围内
+            // 显示footer
+            self.tableView.tableFooterView?.hidden=false
+            
+            // 加载更多的微博数据
+            self.loadMoreStatus()
+        }
+    }
+    
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        let frame:WBStatusFrame=self.statusFrames[indexPath.row] as! WBStatusFrame
+        return frame.cellHeight
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {

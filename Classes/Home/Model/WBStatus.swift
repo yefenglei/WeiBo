@@ -9,7 +9,7 @@
 import Foundation
 class WBStatus:NSObject{
     override static func objectClassInArray() -> [NSObject : AnyObject]! {
-        return ["pic_urls":WBPhoto.self]
+        return ["pic_urls":[WBPhoto.self]]
     }
     
  /// 字符串型的微博ID
@@ -95,7 +95,7 @@ class WBStatus:NSObject{
  /// 微博来源
     var source:String!{
         get{
-            return self._source
+            return self._source == nil ? "" : self._source
         }
         set{
             // 正则表达式 NSRegularExpression
@@ -109,15 +109,27 @@ class WBStatus:NSObject{
             
         }
     }
-    var _source:String!
+    var _source:String?
  /// 微博配图地址。多图时返回多图链接。无配图返回“[]”
-    var pic_urls:[String]!
+    private var _pic_urls:[String]?
+    var pic_urls:[String]!{
+        get{
+            if(self._pic_urls == nil){
+                return [String]()
+            }else{
+                return self.pic_urls
+            }
+        }
+        set{
+            self._pic_urls=newValue
+        }
+    }
  /// 被转发的原微博信息字段，当该微博为转发微博时返回
     var retweeted_status:WBStatus?
  /// 转发数
-    var reposts_count:Int!
+    var reposts_count:Int?
  /// 评论数
-    var comments_count:Int!
+    var comments_count:Int?
  /// 表态数
-    var attitudes_count:Int!
+    var attitudes_count:Int?
 }

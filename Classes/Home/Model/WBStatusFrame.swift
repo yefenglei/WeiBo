@@ -166,11 +166,11 @@ class WBStatusFrame:NSObject{
     ///  - parameter statuses: HWStatus模型数组
     ///
     ///  - returns: HWStatusFrame模型数组
-    static func statusFrames(statuses:[WBStatus])->[WBStatusFrame]{
+    static func statusFrames(statuses:NSMutableArray)->[WBStatusFrame]{
         var frames=[WBStatusFrame]()
-        for status:WBStatus in statuses{
+        for status:AnyObject in statuses{
             let f=WBStatusFrame()
-            f.status=status
+            f.status=status as! WBStatus
             frames.append(f)
         }
         return frames

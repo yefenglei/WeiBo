@@ -33,15 +33,13 @@ class WBUser:NSObject{
         }
         set{
             self._mbtype=newValue
-            self._vip = newValue>2
+            self.vip = newValue>2
         }
     }
  /// 会员等级
-    private var _mbrank:Int!
     var mbrank:Int!
     
-    private var _vip:Bool!
-    var vip:Bool!
+    var vip:Bool?
  /// 认证类型
     var verified_type:WBUserVerifiedType?
 

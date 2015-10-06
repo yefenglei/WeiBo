@@ -26,11 +26,11 @@ class WBStatusToolbar: UIView {
         set{
             self._status=newValue
             // 转发
-            self.setupBtnCount(newValue!.reposts_count, btn: self.repostBtn, title: "转发")
+            self.setupBtnCount(newValue!.reposts_count?.integerValue, btn: self.repostBtn, title: "转发")
             // 评论
-            self.setupBtnCount(newValue!.comments_count, btn: self.commentBtn, title: "评论")
+            self.setupBtnCount(newValue!.comments_count?.integerValue, btn: self.commentBtn, title: "评论")
             // 赞
-            self.setupBtnCount(newValue!.attitudes_count, btn: self.attitudeBtn, title: "赞")
+            self.setupBtnCount(newValue!.attitudes_count?.integerValue, btn: self.attitudeBtn, title: "赞")
         }
     }
     

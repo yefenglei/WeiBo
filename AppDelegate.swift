@@ -12,7 +12,7 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    var task:UIBackgroundTaskIdentifier?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
@@ -46,6 +46,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        
+        
+        /**
+        *  app的状态
+        *  1.死亡状态：没有打开app
+        *  2.前台运行状态
+        *  3.后台暂停状态：停止一切动画、定时器、多媒体、联网操作，很难再作其他操作
+        *  4.后台运行状态
+        */
+        // 向操作系统申请后台运行的资格，能维持多久，是不确定的
+        self.task=application.beginBackgroundTaskWithExpirationHandler({ () -> Void in
+            // 当申请的后台运行时间已经结束（过期），就会调用这个block
+            
+            // 赶紧结束任务
+            application.endBackgroundTask(self.task!)
+
+        })
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
@@ -59,7 +76,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
+    
+    func applicationDidReceiveMemoryWarning(application: UIApplication) {
+        let mgr=SDWebImageManager.sharedManager()
+        // 1.取消下载
+        mgr.cancelAll()
+        
+        // 2.清空内存中的所有图片
+        mgr.imageCache.clearMemory()
+    }
 
 }
 

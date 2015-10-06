@@ -24,6 +24,8 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
         // 集成上拉刷新控件
         self.setupUpRefresh()
         
+//        let timer=NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(10), target: self, selector: "setupUnreadCount", userInfo: nil, repeats: true)
+//        NSRunLoop.mainRunLoop().addTimer(timer, forMode: NSRunLoopCommonModes)
     }
     ///  标题点击
     ///
@@ -132,6 +134,34 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
             
             }) { (operation, error) -> Void in
                 self.tableView.tableFooterView?.hidden=true
+        }
+    }
+///  获得未读数
+    func setupUnreadCount(){
+        // 1.请求管理者
+        let mgr=AFHTTPRequestOperationManager()
+        
+        // 2.拼接请求参数
+        let account=WBAccountTool.account
+        let params=NSMutableDictionary()
+        params["access_token"]=account?.access_token
+        params["uid"]=account?.uid
+        
+        // 3.发送请求
+        mgr.GET("https://rm.api.weibo.com/2/remind/unread_count.json", parameters: params, success: { (operation, responseObject) -> Void in
+            // 请求成功
+            let status:NSNumber=responseObject["status"] as! NSNumber
+            if(status.integerValue == 0){
+                // 如果是0，得清空数字
+                self.tabBarItem.badgeValue=nil
+                UIApplication.sharedApplication().applicationIconBadgeNumber=0
+            }else{
+                // 非0情况
+                self.tabBarItem.badgeValue=status.integerValue.description
+                UIApplication.sharedApplication().applicationIconBadgeNumber=status.integerValue
+            }
+            }) { (operation, error) -> Void in
+                // 请求失败
         }
     }
     
@@ -305,11 +335,11 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if #available(iOS 8.0, *) {
-            self.navigationController?.showViewController(WBTestViewController(), sender: self)
-        } else {
-            self.navigationController?.pushViewController(WBTestViewController(), animated: true)
-        }
+//        if #available(iOS 8.0, *) {
+//            self.navigationController?.showViewController(WBTestViewController(), sender: self)
+//        } else {
+//            self.navigationController?.pushViewController(WBTestViewController(), animated: true)
+//        }
     }
     /// 下拉菜单被销毁
     ///

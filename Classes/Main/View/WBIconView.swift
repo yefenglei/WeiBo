@@ -28,15 +28,15 @@ class WBIconView: UIImageView {
             // 2.设置加V图片
             if let verifiedType=newValue!.verified_type{
                 switch(verifiedType){
-                case WBUserVerifiedType.HWUserVerifiedPersonal: // 个人认证
+                case 0: // 个人认证
                     self.verifiedView.hidden=false
                     self.verifiedView.image=UIImage(named: "avatar_vip")
                     break
-                case WBUserVerifiedType.HWUserVerifiedOrgEnterprice,WBUserVerifiedType.HWUserVerifiedOrgMedia,WBUserVerifiedType.HWUserVerifiedOrgWebsite: // 官方认证
+                case 2,3,5: // 官方认证
                     self.verifiedView.hidden=false
                     self.verifiedView.image=UIImage(named: "avatar_enterprise_vip")
                     break
-                case WBUserVerifiedType.HWUserVerifiedDaren: // 微博达人
+                case 220: // 微博达人
                     self.verifiedView.hidden=false
                     self.verifiedView.image=UIImage(named: "avatar_grassroot")
                     break

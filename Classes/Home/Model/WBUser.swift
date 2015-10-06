@@ -7,7 +7,7 @@
 //
 
 import Foundation
-enum WBUserVerifiedType:Int{
+enum WBUserVerifiedType:NSNumber{
     case HWUserVerifiedTypeNone = -1, // 没有任何认证
     
     HWUserVerifiedPersonal = 0,  // 个人认证
@@ -25,22 +25,22 @@ class WBUser:NSObject{
     var name:String!
  /// string	用户头像地址，50×50像素
     var profile_image_url:String!
-    private var _mbtype:Int!
+    private var _mbtype:NSNumber?
  /// 会员类型 > 2代表是会员
-    var mbtype:Int!{
+    var mbtype:NSNumber?{
         get{
             return self._mbtype
         }
         set{
             self._mbtype=newValue
-            self.vip = newValue>2
+            self.vip = newValue?.integerValue>2
         }
     }
  /// 会员等级
-    var mbrank:Int!
+    var mbrank:NSNumber!
     
     var vip:Bool?
  /// 认证类型
-    var verified_type:WBUserVerifiedType?
+    var verified_type:NSNumber?
 
 }

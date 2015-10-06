@@ -51,6 +51,15 @@ class WBStatusFrame:NSObject{
             let nameSize=(user.name as NSString).size(WBStatusCellNameFont)
             self.nameLabelF=CGRectMake(nameX, nameY, nameSize.width, nameSize.height)
             
+            /** 会员图标 */
+            if(user.vip != nil && user.vip!){
+                let vipX : CGFloat = CGRectGetMaxX(self.nameLabelF) + WBConstant.WBStatusCellBorderW;
+                let vipY:CGFloat = nameY
+                let vipH:CGFloat=nameSize.height
+                let vipW:CGFloat=14
+                self.vipViewF=CGRectMake(vipX, vipY, vipW, vipH)
+            }
+            
             /** 时间 */
             let timeX:CGFloat=nameX
             let timeY:CGFloat=CGRectGetMaxY(self.nameLabelF)+WBStatusCellBorderW
@@ -72,11 +81,11 @@ class WBStatusFrame:NSObject{
             
             /** 配图 */
             var originalH:CGFloat=0
-            if(status.pic_urls.count>0){
+            if(status.pic_urls != nil && status.pic_urls!.count>0){
                 // 有配图
                 let photosX=contentX
                 let photosY=CGRectGetMaxY(self.contentLabelF)+WBStatusCellBorderW
-                let photosSize=WBStatusPhotosView.size(status.pic_urls.count)
+                let photosSize=WBStatusPhotosView.size(status.pic_urls!.count)
                 self.photosViewF = CGRectMake(photosX, photosY, photosSize.width, photosSize.height)
                 originalH=CGRectGetMaxY(self.photosViewF)+WBStatusCellBorderW
             }else{
@@ -102,11 +111,11 @@ class WBStatusFrame:NSObject{
                 
                 /** 被转发微博配图 */
                 var retweetH:CGFloat=0
-                if(retweeted_status.pic_urls.count > 0){
+                if(retweeted_status.pic_urls!.count > 0){
                     // 转发微博有配图
                     let retweetPhotosX=retweetContentX
                     let retweetPhotosY=CGRectGetMaxY(self.retweetContentLabelF) + WBStatusCellBorderW
-                    let retweetPhotosSize=WBStatusPhotosView.size(retweeted_status.pic_urls.count)
+                    let retweetPhotosSize=WBStatusPhotosView.size(retweeted_status.pic_urls!.count)
                     self.retweetPhotosViewF=CGRectMake(retweetPhotosX, retweetPhotosY, retweetPhotosSize.width, retweetPhotosSize.height)
                     retweetH=CGRectGetMaxY(self.retweetPhotosViewF) + WBStatusCellBorderW
                 }else{

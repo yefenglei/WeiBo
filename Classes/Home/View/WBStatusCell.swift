@@ -30,7 +30,7 @@ class WBStatusCell: UITableViewCell {
                 self.vipView.hidden=false
                 
                 self.vipView.frame=newValue!.vipViewF
-                let vipName="common_icon_membership_level\(user.mbrank)"
+                let vipName="common_icon_membership_level\(user.mbrank.integerValue)"
                 self.vipView.image=UIImage(named: vipName)
                 
                 self.nameLabel.textColor=UIColor.orangeColor()
@@ -40,7 +40,7 @@ class WBStatusCell: UITableViewCell {
             }
             
             /** 配图 */
-            if(status.pic_urls.count>0){
+            if(status.pic_urls != nil && status.pic_urls!.count>0){
                 self.photosView.frame=newValue!.photosViewF
                 self.photosView.photos=status.pic_urls
                 self.photosView.hidden=false
@@ -65,6 +65,7 @@ class WBStatusCell: UITableViewCell {
             let sourceY:CGFloat=timeY
             let sourceSize=(status.source as NSString).size(WBConstant.WBStatusCellSourceFont)
             self.sourceLabel.frame=CGRectMake(sourceX, sourceY, sourceSize.width, sourceSize.height)
+            self.sourceLabel.text=status.source
             
             /** 正文 */
             self.contentLabel.text=status.text
@@ -86,7 +87,7 @@ class WBStatusCell: UITableViewCell {
                 self.retweetContentLabel.frame=newValue!.retweetContentLabelF
                 
                 /** 被转发的微博配图 */
-                if(retweeted_status.pic_urls.count>0){
+                if(retweeted_status.pic_urls!.count>0){
                     self.retweetPhotosView.frame=newValue!.retweetPhotosViewF
                     self.retweetPhotosView.photos=retweeted_status.pic_urls
                     self.retweetPhotosView.hidden=false

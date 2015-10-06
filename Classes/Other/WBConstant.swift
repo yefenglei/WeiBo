@@ -14,7 +14,7 @@ class WBConstant{
     /// 时间字体
     static let WBStatusCellTimeFont=UIFont.systemFontOfSize(12)
     /// 来源字体
-    static let WBStatusCellSourceFont=UIFont.systemFontOfSize(15)
+    static let WBStatusCellSourceFont=UIFont.systemFontOfSize(12)
     ///  正文字体
     static let WBStatusCellContentFont=UIFont.systemFontOfSize(14)
     /// 被转发微博的正文字体

@@ -10,4 +10,5 @@ import Foundation
 class WBPhoto:NSObject{
  /// 缩略图地址
     var thumbnail_pic:String!
+    
 }

@@ -9,8 +9,9 @@
 import Foundation
 class WBStatus:NSObject{
     override static func objectClassInArray() -> [NSObject : AnyObject]! {
-        return ["pic_urls":[WBPhoto.self]]
+        return ["pic_urls":WBPhoto.self]
     }
+    
     
  /// 字符串型的微博ID
     var idstr:String!
@@ -91,45 +92,35 @@ class WBStatus:NSObject{
             self._created_at=newValue
         }
     }
-    var _created_at:String!
+    private var _created_at:String!
  /// 微博来源
     var source:String!{
         get{
-            return self._source == nil ? "" : self._source
+            return self._source == nil ? "<a>未认证应用</a>" : self._source
         }
         set{
             // 正则表达式 NSRegularExpression
             // 截串 NSString
-            var range=NSRange()
-            range.location=(newValue as NSString).rangeOfString(">").location
-            range.length=(newValue as NSString).rangeOfString("</").location-range.location
-            let location=(newValue as NSString).substringWithRange(range)
-            self._source="来自\(location)"
-            
-            
-        }
-    }
-    var _source:String?
- /// 微博配图地址。多图时返回多图链接。无配图返回“[]”
-    private var _pic_urls:[String]?
-    var pic_urls:[String]!{
-        get{
-            if(self._pic_urls == nil){
-                return [String]()
-            }else{
-                return self.pic_urls
+            var sc=newValue
+            if(sc==""){
+                sc="<a>未认证应用</a>"
             }
-        }
-        set{
-            self._pic_urls=newValue
+            var range=NSRange()
+            range.location=(sc as NSString).rangeOfString(">").location + 1
+            range.length=(sc as NSString).rangeOfString("</").location-range.location
+            let location=(sc as NSString).substringWithRange(range)
+            self._source="来自\(location)"
         }
     }
+    private var _source:String?
+ /// 微博配图地址。多图时返回多图链接。无配图返回“[]”
+    var pic_urls:NSArray?
  /// 被转发的原微博信息字段，当该微博为转发微博时返回
     var retweeted_status:WBStatus?
  /// 转发数
-    var reposts_count:Int?
+    var reposts_count:NSNumber?
  /// 评论数
-    var comments_count:Int?
+    var comments_count:NSNumber?
  /// 表态数
-    var attitudes_count:Int?
+    var attitudes_count:NSNumber?
 }

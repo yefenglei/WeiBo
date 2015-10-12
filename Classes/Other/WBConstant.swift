@@ -23,4 +23,21 @@ class WBConstant{
     static let WBStatusCellMargin=CGFloat(15)
     ///  cell的边框宽度
     static let WBStatusCellBorderW=CGFloat(10)
+    
+    // 通知
+    // 表情选中的通知
+    static let WBEmotionDidSelectNotification = "WBEmotionDidSelectNotification"
+    static let WBSelectEmotionKey = "WBSelectEmotionKey"
+    // 删除文字的通知
+    static let WBEmotionDidDeleteNotification = "WBEmotionDidDeleteNotification"
+    
+    // MARK: - WBEmotionPageView
+    // 一页中最多3行
+    static let WBEmotionMaxRows:CGFloat=3
+    // 一行中最多7列
+    static let WBEmotionMaxCols:CGFloat=7
+    
+    static var WBEmotionPageSize:CGFloat{
+        return WBEmotionMaxRows * WBEmotionMaxCols - CGFloat(1)
+    }
 }

@@ -17,5 +17,28 @@ class WBEmotionTabBarButton: UIButton {
         // Drawing code
     }
     */
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        // 设置文字颜色
+        self.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        self.setTitleColor(UIColor.darkGrayColor(), forState: UIControlState.Disabled)
+        // 设置字体
+        self.titleLabel?.font=UIFont.systemFontOfSize(13)
+        
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
+    override var highlighted:Bool{
+        get{
+            return false
+        }
+        set{
+            self.highlighted=false
+        }
+    }
 
 }

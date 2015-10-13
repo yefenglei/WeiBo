@@ -9,6 +9,15 @@
 import UIKit
 
 class WBEmotionTextView: WBTextView {
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
     func insertEmotion(emotion:WBEmotion){
         if(emotion.code != nil){
             self.insertText((emotion.code! as NSString).emoji() as String)

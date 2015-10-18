@@ -18,7 +18,7 @@ class WBEmotionPageView: UIView {
     }
     */
 
-    /** 这一页显示的表情（里面都是HWEmotion模型） */
+    /** 这一页显示的表情（里面都是WBEmotion模型） */
     private var _emotions:NSArray?
     var emotions:NSArray!{
         get{
@@ -27,6 +27,9 @@ class WBEmotionPageView: UIView {
         set{
             self._emotions=newValue
             let count=newValue.count
+            if(0 == count){
+                return
+            }
             for i:Int in 0...count-1{
                 let btn=WBEmotionButton()
                 self.addSubview(btn)
@@ -41,7 +44,7 @@ class WBEmotionPageView: UIView {
 
     
     /** 点击表情后弹出的放大镜 */
-    lazy var popView:WBEmotionPopView=WBEmotionPopView()
+    lazy var popView:WBEmotionPopView=WBEmotionPopView.popView()
     /** 删除按钮 */
     weak var deleteButton:UIButton!
     
@@ -158,8 +161,8 @@ class WBEmotionPageView: UIView {
             let btn=self.subviews[i+1] as! WBEmotionButton
             btn.width=btnW
             btn.height=btnH
-            btn.x=inset+(CGFloat(i) % WBConstant.WBEmotionMaxCols) * btnW
-            btn.y=inset+(CGFloat(i) / WBConstant.WBEmotionMaxCols) * btnH
+            btn.x=inset+CGFloat(i % Int(WBConstant.WBEmotionMaxCols)) * btnW
+            btn.y=inset+CGFloat(i / Int(WBConstant.WBEmotionMaxCols)) * btnH
         }
         
         // 删除按钮

@@ -45,6 +45,9 @@ class WBComposePhotosView: UIView {
         let maxCol:Int=4
         let imageWH:CGFloat=70
         let imageMargin:CGFloat=10
+        if(count==0){
+            return
+        }
         for i:Int in 0...count-1{
             let photoView=self.subviews[i] as! UIImageView
             let col = CGFloat(i % maxCol)

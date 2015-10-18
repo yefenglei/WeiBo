@@ -33,7 +33,7 @@ class WBComposeViewController: UIViewController,WBComposeToolbarDelegate,UITextV
         }
     }
     /** 是否正在切换键盘 */
-    var switchingKeyboard:Bool!
+    var switchingKeyboard:Bool!=false
     
     // MARK: - 系统方法
     override func viewDidLoad() {
@@ -93,7 +93,7 @@ class WBComposeViewController: UIViewController,WBComposeToolbarDelegate,UITextV
 ///  设置导航栏内容
     func setupNav(){
         self.navigationItem.leftBarButtonItem=UIBarButtonItem(title: "取消", style: UIBarButtonItemStyle.Done, target: self, action: "cancel")
-        self.navigationItem.leftBarButtonItem=UIBarButtonItem(title: "发送", style: UIBarButtonItemStyle.Done, target: self, action: "send")
+        self.navigationItem.rightBarButtonItem=UIBarButtonItem(title: "发送", style: UIBarButtonItemStyle.Plain, target: self, action: "send")
         self.navigationItem.rightBarButtonItem?.enabled=false
         
         let name=WBAccountTool.account?.name

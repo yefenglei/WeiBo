@@ -43,10 +43,10 @@ class WBTextView: UITextView {
     
     override var text:String?{
         get{
-            return self.text
+            return super.text
         }
         set{
-            self.text=newValue
+            super.text=newValue
             // setNeedsDisplay会在下一个消息循环时刻，调用drawRect:
             self.setNeedsDisplay()
         }
@@ -54,20 +54,20 @@ class WBTextView: UITextView {
     
     override var attributedText:NSAttributedString?{
         get{
-            return self.attributedText
+            return super.attributedText
         }
         set{
-            self.attributedText=newValue
+            super.attributedText=newValue
             self.setNeedsDisplay()
         }
     }
     
     override var font:UIFont?{
         get{
-            return self.font
+            return super.font
         }
         set{
-            self.font=newValue
+            super.font=newValue
             self.setNeedsDisplay()
         }
     }
@@ -102,7 +102,12 @@ class WBTextView: UITextView {
         // 文字属性
         var attrs=[String:AnyObject]()
         attrs[NSFontAttributeName]=self.font
-        attrs[NSForegroundColorAttributeName]=self.placeholderColor == nil ? self.placeholderColor:UIColor.grayColor()
+        //attrs[NSForegroundColorAttributeName] = (self.placeholderColor == nil) ? self.placeholderColor : UIColor.grayColor()
+        if (self.placeholderColor != nil){
+            attrs[NSForegroundColorAttributeName] = self.placeholderColor
+        }else{
+            attrs[NSForegroundColorAttributeName] = UIColor.grayColor()
+        }
         // 画文字
         let x:CGFloat=5
         let w:CGFloat=rect.size.width - 2 * x

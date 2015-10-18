@@ -39,7 +39,8 @@ extension NSString{
     }
     
     static func EmojiCodeToSymbol(c:Int)->Int{
-        return ((((0x808080F0 | (c & 0x3F000) >> 4) | (c & 0xFC0) << 10) | (c & 0x1C0000) << 18) | (c & 0x3F) << 24)
+        let num=NSNumber(unsignedInt: 0x808080F0).integerValue
+        return ((((num | (c & 0x3F000) >> 4) | (c & 0xFC0) << 10) | (c & 0x1C0000) << 18) | (c & 0x3F) << 24)
     }
     
     // 判断是否是emoji表情

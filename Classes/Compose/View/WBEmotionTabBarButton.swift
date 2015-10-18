@@ -37,7 +37,7 @@ class WBEmotionTabBarButton: UIButton {
             return false
         }
         set{
-            self.highlighted=false
+            
         }
     }
 

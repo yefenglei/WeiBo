@@ -31,7 +31,7 @@ class WBComposeToolbar: UIView {
     */
     
     var delegate:WBComposeToolbarDelegate?
-    lazy var emotionButton:UIButton=UIButton()
+    var emotionButton:UIButton!
     
     /** 是否要显示键盘按钮  */
     private var _showKeyboardButton:Bool?
@@ -74,7 +74,7 @@ class WBComposeToolbar: UIView {
         
         self.setupBtn("compose_trendbutton_background", highImage: "compose_trendbutton_background_highlighted", type: WBComposeToolbarButtonType.HWComposeToolbarButtonTypeTrend)
         
-        self.setupBtn("compose_emoticonbutton_background", highImage: "compose_emoticonbutton_background_highlighted", type: WBComposeToolbarButtonType.HWComposeToolbarButtonTypeEmotion)
+        self.emotionButton = self.setupBtn("compose_emoticonbutton_background", highImage: "compose_emoticonbutton_background_highlighted", type: WBComposeToolbarButtonType.HWComposeToolbarButtonTypeEmotion)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -100,7 +100,7 @@ class WBComposeToolbar: UIView {
     }
     
     func btnClicked(btn:UIButton){
-        if(self.delegate != nil && self.delegate!.respondsToSelector("composeToolbar::")){
+        if(self.delegate != nil ){
             self.delegate!.composeToolbar(self, didClickButton: WBComposeToolbarButtonType(rawValue: btn.tag)!)
         }
     }
@@ -111,6 +111,9 @@ class WBComposeToolbar: UIView {
         
         // 设置所有按钮的frame
         let count=self.subviews.count
+        if(count == 0){
+            return
+        }
         let btnW:CGFloat=self.width / CGFloat(count)
         let btnH:CGFloat=self.height
         for i:Int in 0...count-1{

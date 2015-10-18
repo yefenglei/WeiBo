@@ -16,6 +16,9 @@ class WBEmotion:NSObject,NSCoding{
     /** emoji表情的16进制编码 */
     var code:String?
     
+    override init() {
+        super.init()
+    }
     
     ///  将一个对象从沙盒中解档
     ///

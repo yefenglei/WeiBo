@@ -49,10 +49,11 @@ class WBEmotionTabBar: UIView {
         super.init(frame: frame)
         
         self.setupBtn("最近", buttonType: WBEmotionTabBarButtonType.WBEmotionTabBarButtonTypeRecent)
-        self.setupBtn("默认", buttonType: WBEmotionTabBarButtonType.WBEmotionTabBarButtonTypeDefault)
+        let defaultButton=self.setupBtn("默认", buttonType: WBEmotionTabBarButtonType.WBEmotionTabBarButtonTypeDefault)
         self.setupBtn("Emoji", buttonType: WBEmotionTabBarButtonType.WBEmotionTabBarButtonTypeEmoji)
         self.setupBtn("浪小花", buttonType: WBEmotionTabBarButtonType.WBEmotionTabBarButtonTypeLxh)
-        
+        // 默认选中默认表情
+        self.btnClicked(defaultButton)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -99,9 +100,7 @@ class WBEmotionTabBar: UIView {
         
         // 通知代理
         if(self.delegate != nil){
-            if(self.delegate!.respondsToSelector("emotionTabBar::")){
-                self.delegate!.emotionTabBar(self, didSelectButton: WBEmotionTabBarButtonType(rawValue: btn.tag)!)
-            }
+            self.delegate!.emotionTabBar(self, didSelectButton: WBEmotionTabBarButtonType(rawValue: btn.tag)!)
         }
     }
     

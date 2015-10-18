@@ -34,7 +34,9 @@ class WBEmotionListView: UIView,UIScrollViewDelegate {
             let count=(emotions.count + Int(WBConstant.WBEmotionPageSize) - 1)/Int(WBConstant.WBEmotionPageSize)
             // 1.设置页数
             self.pageControl.numberOfPages=count
-            
+            if(count == 0){
+                return
+            }
             // 2.创建用来显示每一项表情的控件
             for i:Int in 0...count-1{
                 let pageView=WBEmotionPageView()
@@ -104,6 +106,9 @@ class WBEmotionListView: UIView,UIScrollViewDelegate {
         
         // 3.设置scrollView内部每一页的尺寸
         let count=self.scrollView.subviews.count
+        if(count == 0){
+            return
+        }
         for i:Int in 0...count-1{
             let pageView=self.scrollView.subviews[i] as! WBEmotionPageView
             pageView.height=self.scrollView.height

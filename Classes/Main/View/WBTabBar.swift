@@ -7,7 +7,10 @@
 //
 
 import UIKit
-
+//warning 因为WBTabBar继承自UITabBar，所以称为WBTabBar的代理，也必须实现UITabBar的代理协议
+protocol WBTabBarDelegate:UITabBarDelegate{
+    func tabBarDidClickPlusButton(tabBar:WBTabBar)
+}
 class WBTabBar: UITabBar {
 
     /*
@@ -19,6 +22,7 @@ class WBTabBar: UITabBar {
     */
     
     private var _plusButton:UIButton!
+    //override var delegate:UITabBarDelegate?
     
     init(){
         super.init(frame: CGRect.null)
@@ -48,9 +52,13 @@ class WBTabBar: UITabBar {
         self.addSubview(plusBtn)
     }
     
+    ///  点击+号按钮，进入写微博界面
+    ///
+    ///  - parameter button: 按钮
     func sendMessage(button:UIButton){
-        let tv=WBTestModalViewController()
-        self.window!.rootViewController!.presentViewController(tv, animated: true, completion: nil)
+        let tv=WBComposeViewController()
+        let nav=WBNavigationViewController(rootViewController: tv)
+        self.window!.rootViewController!.presentViewController(nav, animated: true, completion: nil)
     }
     
     override func layoutSubviews() {
@@ -62,6 +70,9 @@ class WBTabBar: UITabBar {
         var tabbarButtonIndex:CGFloat=0
         let tabbarButtonWidth:CGFloat=self.width/CGFloat(5)
         let count=self.subviews.count
+        if(count==0){
+            return
+        }
         for i:Int in 0...count-1{
             let childView=self.subviews[i] 
             let cls:AnyClass=NSClassFromString("UITabBarButton")!

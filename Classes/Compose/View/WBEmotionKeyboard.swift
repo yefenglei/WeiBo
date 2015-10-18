@@ -19,7 +19,7 @@ class WBEmotionKeyboard: UIView,WBEmotionTabBarDelegate {
     */
     
     /** 保存正在显示listView */
-    var showingListView:WBEmotionListView!
+    var showingListView:WBEmotionListView?
     /** 表情内容 */
     private var _recentListView:WBEmotionListView?
     var recentListView:WBEmotionListView!{
@@ -42,7 +42,7 @@ class WBEmotionKeyboard: UIView,WBEmotionTabBarDelegate {
             if(self._defaultListView==nil){
                 self.defaultListView=WBEmotionListView()
                 let path=NSBundle.mainBundle().pathForResource("EmotionIcons/default/info.plist", ofType: nil)
-                self._defaultListView!.emotions=WBEmotion.objectArrayWithKeyValuesArray(NSArray(file: path))
+                self._defaultListView!.emotions=WBEmotion.objectArrayWithKeyValuesArray(NSArray(contentsOfFile: path!))
                 
             }
             return self._defaultListView!
@@ -57,8 +57,8 @@ class WBEmotionKeyboard: UIView,WBEmotionTabBarDelegate {
         get{
             if(self._emojiListView == nil){
                 self._emojiListView = WBEmotionListView()
-                let path=NSBundle.mainBundle().pathForResource("EmotionIcons/emoji/info.plist", ofType: nil)
-                self._emojiListView!.emotions=WBEmotion.objectArrayWithKeyValuesArray(NSArray(file: path))
+                let path=NSBundle.mainBundle().pathForResource("EmotionIcons/emoji/info", ofType: "plist")
+                self._emojiListView!.emotions=WBEmotion.objectArrayWithKeyValuesArray(NSArray(contentsOfFile: path!))
             }
             return self._emojiListView!
         }
@@ -72,7 +72,7 @@ class WBEmotionKeyboard: UIView,WBEmotionTabBarDelegate {
             if(self._lxhListView == nil){
                 self._lxhListView = WBEmotionListView()
                 let path=NSBundle.mainBundle().pathForResource("EmotionIcons/lxh/info.plist", ofType: nil)
-                self._lxhListView!.emotions=WBEmotion.objectArrayWithKeyValuesArray(NSArray(file: path))
+                self._lxhListView!.emotions=WBEmotion.objectArrayWithKeyValuesArray(NSArray(contentsOfFile: path!))
             }
             return self._lxhListView!
         }
@@ -90,6 +90,9 @@ class WBEmotionKeyboard: UIView,WBEmotionTabBarDelegate {
         tabBar.delegate=self
         self.addSubview(tabBar)
         self.tabBar=tabBar
+        
+        // 第一次加载 选择默认
+         self.emotionTabBar(self.tabBar,didSelectButton: WBEmotionTabBarButtonType.WBEmotionTabBarButtonTypeDefault)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -106,16 +109,19 @@ class WBEmotionKeyboard: UIView,WBEmotionTabBarDelegate {
         self.tabBar.y=self.height-self.tabBar.height
         
         // 2.表情内容
-        self.showingListView.x=0
-        self.showingListView.y=0
-        self.showingListView.width=self.width
-        self.showingListView.height=self.tabBar.y
-        
+        if(self.showingListView != nil){
+            self.showingListView!.x=0
+            self.showingListView!.y=0
+            self.showingListView!.width=self.width
+            self.showingListView!.height=self.tabBar.y
+        }
     }
     
     func emotionTabBar(tabBar: WBEmotionTabBar, didSelectButton buttonType: WBEmotionTabBarButtonType) {
         // 移除正在显示的listView控件
-        self.showingListView.removeFromSuperview()
+        if(self.showingListView != nil){
+            self.showingListView!.removeFromSuperview()
+        }
         
         // 根据按钮类型，切换键盘上面的listview
         switch(buttonType){
@@ -138,7 +144,7 @@ class WBEmotionKeyboard: UIView,WBEmotionTabBarDelegate {
         }
         
         // 设置正在显示的listView
-        self.showingListView=self.subviews.last as! WBEmotionListView
+        self.showingListView=self.subviews.last as? WBEmotionListView
         
         // 设置frame
         self.setNeedsLayout()

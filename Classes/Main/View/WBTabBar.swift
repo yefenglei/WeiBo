@@ -67,8 +67,9 @@ class WBTabBar: UITabBar {
         self._plusButton.centerX=self.width*0.5
         self._plusButton.centerY=self.height*0.5
         // 2.设置其它tabbarbutton的位置和尺寸
+        let tabBarCount:Int=5
         var tabbarButtonIndex:CGFloat=0
-        let tabbarButtonWidth:CGFloat=self.width/CGFloat(5)
+        let tabbarButtonWidth:CGFloat=self.width/CGFloat(tabBarCount)
         let count=self.subviews.count
         if(count==0){
             return
@@ -85,6 +86,8 @@ class WBTabBar: UITabBar {
                 if(2==tabbarButtonIndex){
                     tabbarButtonIndex++
                 }
+                // 隐藏按钮
+                //childView.hidden=true
             }
         }
     }

@@ -90,9 +90,6 @@ class WBEmotionKeyboard: UIView,WBEmotionTabBarDelegate {
         tabBar.delegate=self
         self.addSubview(tabBar)
         self.tabBar=tabBar
-        
-        // 第一次加载 选择默认
-         self.emotionTabBar(self.tabBar,didSelectButton: WBEmotionTabBarButtonType.WBEmotionTabBarButtonTypeDefault)
     }
 
     required init?(coder aDecoder: NSCoder) {

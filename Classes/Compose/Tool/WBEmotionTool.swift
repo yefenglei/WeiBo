@@ -18,9 +18,18 @@ class WBEmotionTool:NSObject{
         if(emotions == nil){
             emotions = NSMutableArray()
         }
+
+        for em in emotions!{
+            let item = em as! WBEmotion
+            if((item.chs != nil && item.chs! == emotion.chs)||(item.png != nil && item.png! == emotion.png)){
+                emotions?.removeObject(item)
+                break
+            }
+        }
         
         // 将表情放到数组的最前面
         emotions?.insertObject(emotion, atIndex: 0)
+        
         
         // 将所有的表情数据写入沙盒
         NSKeyedArchiver.archiveRootObject(emotions!, toFile: WBRecentEmotionsPath)

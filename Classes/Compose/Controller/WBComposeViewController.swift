@@ -350,7 +350,7 @@ class WBComposeViewController: UIViewController,WBComposeToolbarDelegate,UITextV
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        
+        picker.dismissViewControllerAnimated(true, completion: nil)
     }
     /*
     // MARK: - Navigation

@@ -4,7 +4,7 @@
 //
 //  Created by 叶锋雷 on 15/10/8.
 //  Copyright © 2015年 叶锋雷. All rights reserved.
-//
+//  用来表示一页的表情
 
 import UIKit
 

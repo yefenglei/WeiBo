@@ -68,7 +68,8 @@ class WBStatusCell: UITableViewCell {
             self.sourceLabel.text=status.source
             
             /** 正文 */
-            self.contentLabel.text=status.text
+            //self.contentLabel.text=status.text
+            self.contentLabel.attributedText=(status.text as NSString).attributedStringWithString(20)
             self.contentLabel.frame=newValue!.contentLabelF
             
             /** 被转发的微博 */

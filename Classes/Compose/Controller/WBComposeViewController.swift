@@ -93,8 +93,8 @@ class WBComposeViewController: UIViewController,WBComposeToolbarDelegate,UITextV
 ///  设置导航栏内容
     func setupNav(){
         self.navigationItem.leftBarButtonItem=UIBarButtonItem(title: "取消", style: UIBarButtonItemStyle.Done, target: self, action: "cancel")
-        self.navigationItem.rightBarButtonItem=UIBarButtonItem(title: "发送", style: UIBarButtonItemStyle.Plain, target: self, action: "send")
-        self.navigationItem.rightBarButtonItem?.enabled=false
+        self.navigationItem.rightBarButtonItem=UIBarButtonItem(title: "发送", style: UIBarButtonItemStyle.Done, target: self, action: "send")
+        self.navigationItem.rightBarButtonItem!.enabled=false
         
         let name=WBAccountTool.account?.name
         let prefix="发微博"
@@ -251,7 +251,7 @@ class WBComposeViewController: UIViewController,WBComposeToolbarDelegate,UITextV
     }
 ///  监听文字改变
     func textDidChange(){
-        self.navigationItem.rightBarButtonItem?.enabled=self.textView.hasText()
+        self.navigationItem.rightBarButtonItem!.enabled=self.textView.hasText()
     }
     
     // MARK: - UITextViewDelegate

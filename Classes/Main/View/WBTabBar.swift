@@ -8,7 +8,7 @@
 
 import UIKit
 //warning 因为WBTabBar继承自UITabBar，所以称为WBTabBar的代理，也必须实现UITabBar的代理协议
-protocol WBTabBarDelegate:UITabBarDelegate{
+protocol WBTabBarDelegate{
     func tabBarDidClickPlusButton(tabBar:WBTabBar)
 }
 class WBTabBar: UITabBar {
@@ -23,6 +23,8 @@ class WBTabBar: UITabBar {
     
     private var _plusButton:UIButton!
     //override var delegate:UITabBarDelegate?
+    
+    var wbDelegate:WBTabBarDelegate?
     
     init(){
         super.init(frame: CGRect.null)
@@ -56,9 +58,12 @@ class WBTabBar: UITabBar {
     ///
     ///  - parameter button: 按钮
     func sendMessage(button:UIButton){
-        let tv=WBComposeViewController()
-        let nav=WBNavigationViewController(rootViewController: tv)
-        self.window!.rootViewController!.presentViewController(nav, animated: true, completion: nil)
+//        let tv=WBComposeViewController()
+//        let nav=WBNavigationViewController(rootViewController: tv)
+//        self.window!.rootViewController!.presentViewController(nav, animated: true, completion: nil)
+        if(wbDelegate != nil){
+            self.wbDelegate!.tabBarDidClickPlusButton(self)
+        }
     }
     
     override func layoutSubviews() {

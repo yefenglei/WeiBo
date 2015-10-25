@@ -8,7 +8,7 @@
 
 import UIKit
 
-class WBTabBarViewController: UITabBarController {
+class WBTabBarViewController: UITabBarController,WBTabBarDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,7 +24,9 @@ class WBTabBarViewController: UITabBarController {
         addChildView(profileVc, title: "我", image: "tabbar_profile", selectedImage: "tabbar_profile_selected")
         
         // 2.更换系统自带的tabbar
-        self.setValue(WBTabBar(), forKeyPath: "tabBar")
+        let tabbar=WBTabBar()
+        tabbar.wbDelegate=self
+        self.setValue(tabbar, forKeyPath: "tabBar")
         
 
         
@@ -67,6 +69,12 @@ class WBTabBarViewController: UITabBarController {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+    }
+    
+    func tabBarDidClickPlusButton(tabBar: WBTabBar) {
+        let tv=WBComposeViewController()
+        let nav=WBNavigationViewController(rootViewController: tv)
+        self.presentViewController(nav, animated: true, completion: nil)
     }
 
     /*

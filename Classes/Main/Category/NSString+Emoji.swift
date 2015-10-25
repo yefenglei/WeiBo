@@ -21,6 +21,7 @@ extension NSString{
             // 新版Emoji
             str=NSString(format: "%C", intCode)
         }
+        str = str?.stringByReplacingOccurrencesOfString("\0", withString: "")
         return str!
     }
     ///  将十六进制的编码转为emoji字符

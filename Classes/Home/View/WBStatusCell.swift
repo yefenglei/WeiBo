@@ -69,7 +69,7 @@ class WBStatusCell: UITableViewCell {
             
             /** 正文 */
             //self.contentLabel.text=status.text
-            self.contentLabel.attributedText=(status.text as NSString).attributedStringWithString(20)
+            self.contentLabel.attributedText=(status.text as NSString).attributedStringWithString(WBConstant.WBStatusCellContentFont.lineHeight)
             self.contentLabel.frame=newValue!.contentLabelF
             
             /** 被转发的微博 */
@@ -84,7 +84,8 @@ class WBStatusCell: UITableViewCell {
                 
                 /** 被转发的微博正文 */
                 let retweetContent="@\(retweeted_status_user.name):\(retweeted_status.text)"
-                self.retweetContentLabel.text=retweetContent
+                //self.retweetContentLabel.text=retweetContent
+                self.retweetContentLabel.attributedText=(retweetContent as NSString).attributedStringWithString(WBConstant.WBStatusCellContentFont.lineHeight)
                 self.retweetContentLabel.frame=newValue!.retweetContentLabelF
                 
                 /** 被转发的微博配图 */

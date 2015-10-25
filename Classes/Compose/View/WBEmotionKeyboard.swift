@@ -90,6 +90,17 @@ class WBEmotionKeyboard: UIView,WBEmotionTabBarDelegate {
         tabBar.delegate=self
         self.addSubview(tabBar)
         self.tabBar=tabBar
+        
+        // 监听表情选中的通知
+        CommonHelper.WBNotificationCenter.addObserver(self, selector: "emotionDidSelect", name: WBConstant.WBEmotionDidSelectNotification, object: nil)
+    }
+    
+    deinit{
+        CommonHelper.WBNotificationCenter.removeObserver(self)
+    }
+    
+    func emotionDidSelect(){
+        self.recentListView.emotions=WBEmotionTool.recentEmotions()
     }
 
     required init?(coder aDecoder: NSCoder) {

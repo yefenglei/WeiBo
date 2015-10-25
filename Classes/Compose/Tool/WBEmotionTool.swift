@@ -10,6 +10,29 @@ import Foundation
 
 class WBEmotionTool:NSObject{
     
+    private static var _allEmotions:NSMutableArray?
+    static var allEmotions:NSMutableArray{
+        if(_allEmotions == nil){
+            // 1.加载本地表情
+            let pathDefault=NSBundle.mainBundle().pathForResource("EmotionIcons/default/info.plist", ofType: nil)
+            let emotions:NSMutableArray=WBEmotion.objectArrayWithKeyValuesArray(NSArray(contentsOfFile: pathDefault!))
+            
+            let pathEmoji=NSBundle.mainBundle().pathForResource("EmotionIcons/emoji/info", ofType: "plist")
+            let emojiArray=WBEmotion.objectArrayWithKeyValuesArray(NSArray(contentsOfFile: pathEmoji!))
+            for item:AnyObject in emojiArray{
+                emotions.addObject(item)
+            }
+            
+            let pathLxh=NSBundle.mainBundle().pathForResource("EmotionIcons/lxh/info.plist", ofType: nil)
+            let lxhArray=WBEmotion.objectArrayWithKeyValuesArray(NSArray(contentsOfFile: pathLxh!))
+            for item:AnyObject in lxhArray{
+                emotions.addObject(item)
+            }
+            _allEmotions = emotions
+        }
+        return _allEmotions!
+    }
+    
     static let WBRecentEmotionsPath:String = ((NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents") as NSString).stringByAppendingPathComponent("emotions.archive")
     
     static func addRecentEmotion(emotion:WBEmotion){
@@ -21,7 +44,7 @@ class WBEmotionTool:NSObject{
 
         for em in emotions!{
             let item = em as! WBEmotion
-            if((item.chs != nil && item.chs! == emotion.chs)||(item.png != nil && item.png! == emotion.png)){
+            if(item.isEqualTo(emotion)){
                 emotions?.removeObject(item)
                 break
             }

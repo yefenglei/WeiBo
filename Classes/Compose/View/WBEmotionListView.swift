@@ -37,6 +37,11 @@ class WBEmotionListView: UIView,UIScrollViewDelegate {
             if(count == 0){
                 return
             }
+            
+            // 删除之前的控件
+            self.scrollView.subviews.forEach { (view:UIView) -> () in
+                view.removeFromSuperview()
+            }
             // 2.创建用来显示每一项表情的控件
             for i:Int in 0...count-1{
                 let pageView=WBEmotionPageView()
@@ -55,6 +60,8 @@ class WBEmotionListView: UIView,UIScrollViewDelegate {
                 pageView.emotions = emotions.subarrayWithRange(range)
                 self.scrollView.addSubview(pageView)
             }
+            
+            self.setNeedsLayout()
         }
     }
     

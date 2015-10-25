@@ -19,13 +19,13 @@ class WBNavigationViewController: UINavigationController {
         
         // 设置整个项目所有item的主题样式
         let barbuttom=UIBarButtonItem.appearance()
-        
-        // 设置普通状态
-        let textAttrs=[NSForegroundColorAttributeName:UIColor.orangeColor(),NSFontAttributeName:UIFont.systemFontOfSize(15)]
-        barbuttom.setTitleTextAttributes(textAttrs, forState: UIControlState.Normal)
         // 设置不可用状态
         let disabledTextAttrs=[NSForegroundColorAttributeName:UIColor.grayColor(),NSFontAttributeName:UIFont.systemFontOfSize(15)]
         barbuttom.setTitleTextAttributes(disabledTextAttrs, forState: UIControlState.Disabled)
+        // 设置普通状态
+        let textAttrs=[NSForegroundColorAttributeName:UIColor.orangeColor(),NSFontAttributeName:UIFont.systemFontOfSize(15)]
+        barbuttom.setTitleTextAttributes(textAttrs, forState: UIControlState.Normal)
+
     }
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {

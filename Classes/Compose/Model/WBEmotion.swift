@@ -38,4 +38,13 @@ class WBEmotion:NSObject,NSCoding{
         enCoder.encodeObject(self.png, forKey: "png")
         enCoder.encodeObject(self.code, forKey: "code")
     }
+    
+    func isEqualTo(emotion: WBEmotion) -> Bool {
+        if((self.chs != nil && self.chs! == emotion.chs)||(self.png != nil && self.png! == emotion.png)||(self.code != nil && self.code! == emotion.code)){
+            return true
+        }else{
+            return false
+        }
+    }
+    
 }

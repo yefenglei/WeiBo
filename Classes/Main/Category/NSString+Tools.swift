@@ -13,22 +13,14 @@ extension NSString{
         return self.boundingRectWithSize(size, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: attributes as? [String : AnyObject], context: nil)
     }
     
+    ///  将字符串转为 图文混排的字符串
+    ///
+    ///  - parameter attchWH: 行高
+    ///
+    ///  - returns: NSAttributedString
     func attributedStringWithString(attchWH:CGFloat)->NSAttributedString{
         // 1.加载本地表情
-        let pathDefault=NSBundle.mainBundle().pathForResource("EmotionIcons/default/info.plist", ofType: nil)
-        let emotions:NSMutableArray=WBEmotion.objectArrayWithKeyValuesArray(NSArray(contentsOfFile: pathDefault!))
-        
-        let pathEmoji=NSBundle.mainBundle().pathForResource("EmotionIcons/emoji/info", ofType: "plist")
-        let emojiArray=WBEmotion.objectArrayWithKeyValuesArray(NSArray(contentsOfFile: pathEmoji!))
-        for item:AnyObject in emojiArray{
-            emotions.addObject(item)
-        }
-        
-        let pathLxh=NSBundle.mainBundle().pathForResource("EmotionIcons/lxh/info.plist", ofType: nil)
-        let lxhArray=WBEmotion.objectArrayWithKeyValuesArray(NSArray(contentsOfFile: pathLxh!))
-        for item:AnyObject in lxhArray{
-            emotions.addObject(item)
-        }
+        let emotions=WBEmotionTool.allEmotions
         
         // 2.把上面的content转换为可变的属性字符串
         let attributeString = NSMutableAttributedString(string: self as String)

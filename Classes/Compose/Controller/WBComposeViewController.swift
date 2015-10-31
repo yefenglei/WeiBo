@@ -206,23 +206,20 @@ class WBComposeViewController: UIViewController,WBComposeToolbarDelegate,UITextV
         /**	access_token true string*/
         /**	pic true binary 微博的配图。*/
         
-        // 1.请求管理者
-        let mgr=AFHTTPRequestOperationManager()
-        
-        // 2.拼接请求参数
+        // 1.拼接请求参数
         let params=NSMutableDictionary()
         params["access_token"]=WBAccountTool.account!.access_token
         params["status"]=self.textView.fullText()
         
-        // 3.发送请求
-        mgr.POST("https://upload.api.weibo.com/2/statuses/upload.json", parameters: params, constructingBodyWithBlock: { (formData:AFMultipartFormData) -> Void in
+        // 2.发送请求
+        WBHttpTool.post("https://upload.api.weibo.com/2/statuses/upload.json", params: params, constructingBodyBlock: { (formData) -> Void in
             // 拼接文件数据
             let image=self.photosView.photos[0]
             let data=UIImageJPEGRepresentation(image, 1.0)!
             formData.appendPartWithFileData(data, name: "pic", fileName: "test.jpg", mimeType: "image/jpeg")
-            }, success: { (operation:AFHTTPRequestOperation, responseObject) -> Void in
+            }, success: { (responseObject) -> Void in
                 MBProgressHUD.showSuccess("发送成功")
-            }) { (operation:AFHTTPRequestOperation, error) -> Void in
+            }) { (error) -> Void in
                 MBProgressHUD.showError("发送失败")
         }
     }
@@ -234,18 +231,15 @@ class WBComposeViewController: UIViewController,WBComposeToolbarDelegate,UITextV
         /**	status true string 要发布的微博文本内容，必须做URLencode，内容不超过140个汉字。*/
         /**	access_token true string*/
         
-        // 1.请求管理者
-        let mgr=AFHTTPRequestOperationManager()
-        
-        // 2.拼接请求参数
+        // 1.拼接请求参数
         let params=NSMutableDictionary()
         params["access_token"]=WBAccountTool.account!.access_token
         params["status"]=self.textView.fullText()
         
-        // 3.发送请求
-        mgr.POST("https://api.weibo.com/2/statuses/update.json", parameters: params, success: { (operation:AFHTTPRequestOperation, responseObject) -> Void in
+        // 2.发送请求
+        WBHttpTool.post("https://api.weibo.com/2/statuses/update.json", params: params, success: { (responseObject) -> Void in
             MBProgressHUD.showSuccess("发送成功")
-            }) { (operation, error) -> Void in
+            }) { (error) -> Void in
                 MBProgressHUD.showError("发送失败")
         }
     }

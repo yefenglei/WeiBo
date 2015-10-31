@@ -78,20 +78,17 @@ class WBAuthoViewController: UIViewController,UIWebViewDelegate,NSURLConnectionD
         redirect_uri：授权成功后的回调地址
         code：授权成功后返回的code
         */
-        // 1.请求管理者
-        let mgr=AFHTTPRequestOperationManager()
-        mgr.responseSerializer.acceptableContentTypes = NSSet(object: "text/plain") as Set<NSObject>
 
-        
-        // 2.拼接请求参数
+        // 1.拼接请求参数
         let params=NSMutableDictionary()
-        params["client_id"]="1474004406"
-        params["client_secret"]="c3daadfefd2ea3a68448b6ce98e2099e"
+        params["client_id"] = WBConstant.WBAppKey
+        params["client_secret"]=WBConstant.WBAppSecret
         params["grant_type"]="authorization_code"
-        params["redirect_uri"]="http://www.baidu.com"
+        params["redirect_uri"]=WBConstant.WBRedirectURI
         params["code"]=code
-        // 3.发送请求
-        mgr.POST("https://api.weibo.com/oauth2/access_token", parameters: params, success: { (operation, responseObject) -> Void in
+        // 2.发送请求
+        
+        WBHttpTool.post("https://api.weibo.com/oauth2/access_token", params: params, success: { (responseObject) -> Void in
             let dictData:NSDictionary?=responseObject as? NSDictionary
             // 将字典数据 转为 模型
             let account=WBAccount(dictData: dictData!)
@@ -100,10 +97,9 @@ class WBAuthoViewController: UIViewController,UIWebViewDelegate,NSURLConnectionD
             // 切换窗口的根控制器
             let window=UIApplication.sharedApplication().keyWindow
             window?.switchRootViewController()
-            }){ (operation, error) -> Void in
+            }) { (error) -> Void in
                 MBProgressHUD.hideHUD()
-                //NSLog("请求失败,\(error.userInfo.description)")
-            }
+        }
     }
     // MARK: - UIWebViewDelegate
     func webViewDidFinishLoad(webView: UIWebView) {

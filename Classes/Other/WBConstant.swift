@@ -40,4 +40,9 @@ class WBConstant{
     static var WBEmotionPageSize:CGFloat{
         return WBEmotionMaxRows * WBEmotionMaxCols - CGFloat(1)
     }
+    
+    // 账号信息
+    static let WBAppKey="1474004406"
+    static let WBRedirectURI="http://www.baidu.com"
+    static let WBAppSecret="c3daadfefd2ea3a68448b6ce98e2099e"
 }

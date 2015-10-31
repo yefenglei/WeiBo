@@ -56,9 +56,7 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
     ///
     ///  - parameter control: 下拉刷新控件
     func loadNewStatus(control:UIRefreshControl){
-        // 1.请求管理者
-        let mgr=AFHTTPRequestOperationManager()
-        // 2.拼接请求参数
+        // 1.拼接请求参数
         let account=WBAccountTool.account!
         let params=NSMutableDictionary()
         params["access_token"]=account.access_token
@@ -69,8 +67,8 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
             // 若指定此参数，则返回ID比since_id大的微博（即比since_id时间晚的微博），默认为0
             params["since_id"]=firstStatusF!.status.idstr
         }
-        // 3.发送请求
-        mgr.GET("https://api.weibo.com/2/statuses/friends_timeline.json", parameters: params, success: { (operation, responseObject) -> Void in
+        // 2.发送请求
+        WBHttpTool.get("https://api.weibo.com/2/statuses/friends_timeline.json", params: params, success: { (responseObject) -> Void in
             // 请求成功
             // 将 "微博字典"数组 转为 "微博模型"数组
             let newStatuses:NSMutableArray=WBStatus.objectArrayWithKeyValuesArray(responseObject["statuses"])
@@ -90,21 +88,15 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
             
             //显示最新微博的数量
             self.showNewStatusCount(newStatuses.count)
-            
-            
-            }) { (operation, error) -> Void in
+            }) { (error) -> Void in
                 // 请求失败
                 control.endRefreshing()
         }
-        
     }
     
 ///  加载更多的微博数据
     func loadMoreStatus(){
-        // 1.请求管理者
-        let mgr=AFHTTPRequestOperationManager()
-        
-        // 2.拼接请求参数
+        // 1.拼接请求参数
         let account=WBAccountTool.account
         let params=NSMutableDictionary()
         params["access_token"]=account?.access_token
@@ -118,8 +110,8 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
             params["max_id"]=maxId.description
         }
         
-        // 3.发送请求
-        mgr.GET("https://api.weibo.com/2/statuses/friends_timeline.json", parameters: params, success: { (operation, responseObject) -> Void in
+        // 2.发送请求
+        WBHttpTool.get("https://api.weibo.com/2/statuses/friends_timeline.json", params: params, success: { (responseObject) -> Void in
             // 将 "微博字典"数组 转为 "微博模型"数组
             let newStatuses=WBStatus.objectArrayWithKeyValuesArray(responseObject["statuses"])
             // 将 HWStatus数组 转为 HWStatusFrame数组
@@ -130,25 +122,20 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
             self.tableView.reloadData()
             // 结束刷新(隐藏footer)
             self.tableView.tableFooterView?.hidden=true
-            
-            
-            }) { (operation, error) -> Void in
+            }) { (error) -> Void in
                 self.tableView.tableFooterView?.hidden=true
         }
     }
 ///  获得未读数
     func setupUnreadCount(){
-        // 1.请求管理者
-        let mgr=AFHTTPRequestOperationManager()
-        
-        // 2.拼接请求参数
+        // 1.拼接请求参数
         let account=WBAccountTool.account
         let params=NSMutableDictionary()
         params["access_token"]=account?.access_token
         params["uid"]=account?.uid
         
-        // 3.发送请求
-        mgr.GET("https://rm.api.weibo.com/2/remind/unread_count.json", parameters: params, success: { (operation, responseObject) -> Void in
+        // 2.发送请求
+        WBHttpTool.get("https://rm.api.weibo.com/2/remind/unread_count.json", params: params, success: { (responseObject) -> Void in
             // 请求成功
             let status:NSNumber=responseObject["status"] as! NSNumber
             if(status.integerValue == 0){
@@ -160,8 +147,8 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
                 self.tabBarItem.badgeValue=status.integerValue.description
                 UIApplication.sharedApplication().applicationIconBadgeNumber=status.integerValue
             }
-            }) { (operation, error) -> Void in
-                // 请求失败
+            }) { (error) -> Void in
+                
         }
     }
     
@@ -188,17 +175,14 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
     
     ///  获取用户信息（昵称）
     func setupUserInfo(){
-        // 1.请求管理者
-        let mgr=AFHTTPRequestOperationManager()
-        
-        // 2.拼接请求参数
+        // 1.拼接请求参数
         let account=WBAccountTool.account!
         let params=NSMutableDictionary()
         params["access_token"]=account.access_token
         params["uid"]=account.uid
         
-        // 3.发送请求
-        mgr.GET("https://api.weibo.com/2/users/show.json", parameters: params, success: { (operation, responseObject) -> Void in
+        // 2.发送请求
+        WBHttpTool.get("https://api.weibo.com/2/users/show.json", params: params, success: { (responseObject) -> Void in
             // 标题按钮
             let titleButtion=self.navigationItem.titleView as! UIButton
             // 设置名字
@@ -207,9 +191,7 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
             // 存储昵称到沙盒中
             account.name=user.name
             WBAccountTool.saveAccount(account)
-            
-            }) { (operation, error) -> Void in
-                NSLog("请求失败：\(error)")
+            }) { (error) -> Void in
         }
     }
 ///  设置导航栏内容

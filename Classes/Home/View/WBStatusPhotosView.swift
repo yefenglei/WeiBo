@@ -55,7 +55,7 @@ class WBStatusPhotosView: UIView {
         // 设置图片的尺寸和位置
         let photosCount=self.photos!.count
         let maxCol=WBStatusPhotosView.WBStatusPhotoMaxCol(photosCount)
-        for i:Int in 0...photosCount-1{
+        for i:Int in 0..<photosCount{
             let photoView=self.subviews[i] as! WBStatusPhotoView
             let col = i % maxCol
             photoView.x = CGFloat(col) * (WBStatusPhotoWH + WBStatusPhotoMargin)

@@ -33,6 +33,33 @@ class WBEmotionTool:NSObject{
         return _allEmotions!
     }
     
+    private static var _emojiEmotions:NSArray?
+    static var emojiEmotions:NSArray{
+        if(self._emojiEmotions==nil){
+            let pathEmoji=NSBundle.mainBundle().pathForResource("EmotionIcons/emoji/info", ofType: "plist")
+            self._emojiEmotions=WBEmotion.objectArrayWithKeyValuesArray(NSArray(contentsOfFile: pathEmoji!))
+        }
+        return self._emojiEmotions!
+    }
+    
+    private static var _defaultEmotions:NSArray?
+    static var defaultEmotions:NSArray{
+        if(self._defaultEmotions==nil){
+            let pathDefault=NSBundle.mainBundle().pathForResource("EmotionIcons/default/info.plist", ofType: nil)
+            self._defaultEmotions=WBEmotion.objectArrayWithKeyValuesArray(NSArray(contentsOfFile: pathDefault!))
+        }
+        return self._defaultEmotions!
+    }
+    
+    private static var _lxhEmotions:NSArray?
+    static var lxhEmotions:NSArray{
+        if(self._lxhEmotions==nil){
+            let pathLxh=NSBundle.mainBundle().pathForResource("EmotionIcons/lxh/info.plist", ofType: nil)
+            self._lxhEmotions=WBEmotion.objectArrayWithKeyValuesArray(NSArray(contentsOfFile: pathLxh!))
+        }
+        return self._lxhEmotions!
+    }
+    
     static let WBRecentEmotionsPath:String = ((NSHomeDirectory() as NSString).stringByAppendingPathComponent("Documents") as NSString).stringByAppendingPathComponent("emotions.archive")
     
     static func addRecentEmotion(emotion:WBEmotion){
@@ -63,5 +90,22 @@ class WBEmotionTool:NSObject{
     ///  - returns: 数组
     static func recentEmotions()->NSMutableArray?{
         return NSKeyedUnarchiver.unarchiveObjectWithFile(WBRecentEmotionsPath) as? NSMutableArray
+    }
+    
+    static func emotion(chs:String)->WBEmotion?{
+        let defaults=self.defaultEmotions
+        for em in defaults{
+            if((em as! WBEmotion).chs==chs){
+                return em as? WBEmotion
+            }
+        }
+        
+        let lxhs=self.lxhEmotions
+        for em in lxhs{
+            if((em as! WBEmotion).chs==chs){
+                return em as? WBEmotion
+            }
+        }
+        return nil
     }
 }

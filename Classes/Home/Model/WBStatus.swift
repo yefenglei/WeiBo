@@ -16,7 +16,31 @@ class WBStatus:NSObject{
  /// 字符串型的微博ID
     var idstr:String!
  /// 微博信息内容
-    var text:String!
+    private var _text:String?
+    var text:String!{
+        set{
+            self._text=newValue
+            self._attributedText=self.attributedTextWithText(newValue as NSString)
+        }
+        get{
+            if(self._text==nil){
+                self._text=""
+            }
+            return self._text!
+        }
+    }
+    
+ /// 微博信息内容 -- 带有属性的(特殊文字会高亮显示\显示表情)
+    var _attributedText:NSAttributedString?
+    var attributedText:NSAttributedString?{
+        get{
+            return self._attributedText
+        }
+        set{
+            self._attributedText=newValue
+        }
+    }
+    
  /// 微博作者的用户信息字段 详细
     var user:WBUser!
     /**
@@ -116,11 +140,118 @@ class WBStatus:NSObject{
  /// 微博配图地址。多图时返回多图链接。无配图返回“[]”
     var pic_urls:NSArray?
  /// 被转发的原微博信息字段，当该微博为转发微博时返回
-    var retweeted_status:WBStatus?
+    private var _retweeted_status:WBStatus?
+    
+    var retweeted_status:WBStatus?{
+        get{
+            return self._retweeted_status
+        }
+        set{
+            self._retweeted_status=newValue
+            let retweetContent=NSString(format: "@%@ : %@", newValue!.user.name, newValue!.text)
+            self.retweetedAttributedText=self.attributedTextWithText(retweetContent)
+        }
+    }
+
+ /// 被转发的原微博信息内容 -- 带有属性的(特殊文字会高亮显示\显示表情)
+    var retweetedAttributedText:NSAttributedString?
  /// 转发数
     var reposts_count:NSNumber?
  /// 评论数
     var comments_count:NSNumber?
  /// 表态数
     var attitudes_count:NSNumber?
+    
+    /**
+     *  普通文字 --> 属性文字
+     *
+     *  @param text 普通文字
+     *
+     *  @return 属性文字
+     */
+    private func attributedTextWithText(text:NSString)->NSAttributedString{
+        let attributedText=NSMutableAttributedString()
+        // 表情的规则
+        let emotionPattern="\\[[0-9a-zA-Z\\u4e00-\\u9fa5]+\\]"
+        // @的规则
+        let atPattern = "@[0-9a-zA-Z\\u4e00-\\u9fa5-_]+"
+        // #话题#的规则
+        let topicPattern = "#[0-9a-zA-Z\\u4e00-\\u9fa5]+#"
+        // url链接的规则
+        let urlPattern = "\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^[:punct:]\\s]|/)))"
+        //let pattern="\(emotionPattern)|\(atPattern)|\(topicPattern)|\(urlPattern)"
+        let pattern=NSString(format: "%@|%@|%@|%@", emotionPattern, atPattern, topicPattern, urlPattern) as String
+        // 遍历所有的特殊字符串
+        var parts=[WBTextPart]()
+        
+        text.enumerateStringsMatchedByRegex(pattern) { (captureCount, capturedStrings, capturedRanges, stop) -> Void in
+            if(capturedRanges.memory.length==0){
+                return
+            }
+            let part=WBTextPart()
+            part.isSpecial=true
+            part.text=capturedStrings.memory as! String
+            part.range=capturedRanges.memory
+            part.isEmotion=part.text.hasPrefix("[")&&part.text.hasSuffix("]")
+            parts.append(part)
+        }
+        // 遍历所有的非特殊字符
+        text.enumerateStringsSeparatedByRegex(pattern) { (captureCount, capturedStrings, capturedRanges, stop) -> Void in
+            if(capturedRanges.memory.length==0){
+                return
+            }
+            let part=WBTextPart()
+            part.text=capturedStrings.memory as! String
+            part.range=capturedRanges.memory
+            parts.append(part)
+        }
+        
+        // 排序
+        // 系统是按照从小 -> 大的顺序排列对象
+        parts.sortInPlace { (part1, part2) -> Bool in
+            part1.range.location<part2.range.location
+        }
+        
+        let font=WBConstant.WBStatusCellContentFont
+        var specials=[WBSpecial]()
+        // 按顺序拼接每一段文字
+        for part:WBTextPart in parts{
+            // 等会需要拼接的子串
+            var substr:NSAttributedString
+            if(part.isEmotion==true){ // 表情
+                let attach=NSTextAttachment()
+                let name=WBEmotionTool.emotion(part.text)?.png
+                if(name != nil){
+                    // 能找到对应的图片
+                    attach.image=UIImage(named: name!)
+                    attach.bounds=CGRectMake(0, -3, font.lineHeight, font.lineHeight)
+                    substr=NSAttributedString(attachment: attach)
+                }else{
+                    // 表情图片不存在
+                    substr=NSAttributedString(string: part.text)
+                }
+            }else if(part.isSpecial==true){
+                // 非表情特殊文字
+                let attr=[NSForegroundColorAttributeName:UIColor.redColor()]
+                substr=NSAttributedString(string: part.text, attributes: attr)
+                // 创建特殊对象
+                let s=WBSpecial()
+                s.text=part.text
+                let loc=attributedText.length
+                let len=(part.text as NSString).length
+                s.range=NSMakeRange(loc, len)
+                specials.append(s)
+            }else{
+                // 非特殊文字
+                substr=NSAttributedString(string: part.text)
+            }
+            attributedText.appendAttributedString(substr)
+        }
+        
+        // 一定要设置字体,保证计算出来的尺寸是正确的
+        attributedText.addAttribute(NSFontAttributeName, value: font, range: NSMakeRange(0, attributedText.length))
+        attributedText.addAttribute("specials", value: specials, range: NSMakeRange(0, 1))
+        
+        return attributedText
+    }
 }

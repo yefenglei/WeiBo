@@ -76,8 +76,9 @@ class WBStatusFrame:NSObject{
             let contentX=iconX
             let contentY=max(CGRectGetMaxY(self.iconViewF), CGRectGetMaxY(self.timeLabelF)) + WBStatusCellBorderW
             let maxW=cellW-2*contentX
-            let contentSize=(status.text as NSString).size(WBStatusCellContentFont,maxW: maxW)
-            self.contentLabelF=CGRectMake(contentX, contentY, contentSize.width, contentSize.height)
+            //let contentSize=(status.text as NSString).size(WBStatusCellContentFont,maxW: maxW)
+            let contentSize=status.attributedText?.boundingRectWithSize(CGSizeMake(maxW, CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, context: nil).size
+            self.contentLabelF=CGRectMake(contentX, contentY, contentSize!.width, contentSize!.height)
             
             /** 配图 */
             var originalH:CGFloat=0
@@ -101,13 +102,15 @@ class WBStatusFrame:NSObject{
             /* 被转发微博 */
             if(status.retweeted_status != nil){
                 let retweeted_status:WBStatus=status.retweeted_status!
-                let retweeted_status_user=retweeted_status.user
+                //let retweeted_status_user=retweeted_status.user
                 /** 被转发微博正文 */
                 let retweetContentX = WBStatusCellBorderW;
                 let retweetContentY = WBStatusCellBorderW;
-                let retweetContent = NSString(format: "@%@ : %@", retweeted_status_user.name,retweeted_status.text)
-                let retweetContentSize = retweetContent.size(WBStatusCellRetweetContentFont, maxW: maxW)
-                self.retweetContentLabelF=CGRectMake(retweetContentX, retweetContentY, retweetContentSize.width, retweetContentSize.height)
+                //let retweetContent = NSString(format: "@%@ : %@", retweeted_status_user.name,retweeted_status.text)
+                //let retweetContentSize = retweetContent.size(WBStatusCellRetweetContentFont, maxW: maxW)
+                let retweetContentSize = status.retweetedAttributedText?.boundingRectWithSize(CGSizeMake(maxW, CGFloat.max), options: NSStringDrawingOptions.UsesLineFragmentOrigin, context: nil).size
+                
+                self.retweetContentLabelF=CGRectMake(retweetContentX, retweetContentY, retweetContentSize!.width, retweetContentSize!.height)
                 
                 /** 被转发微博配图 */
                 var retweetH:CGFloat=0

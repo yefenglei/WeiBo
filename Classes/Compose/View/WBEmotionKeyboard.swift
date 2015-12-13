@@ -41,8 +41,7 @@ class WBEmotionKeyboard: UIView,WBEmotionTabBarDelegate {
         get{
             if(self._defaultListView==nil){
                 self.defaultListView=WBEmotionListView()
-                let path=NSBundle.mainBundle().pathForResource("EmotionIcons/default/info.plist", ofType: nil)
-                self._defaultListView!.emotions=WBEmotion.objectArrayWithKeyValuesArray(NSArray(contentsOfFile: path!))
+                self._defaultListView!.emotions=WBEmotionTool.defaultEmotions
                 
             }
             return self._defaultListView!
@@ -57,8 +56,7 @@ class WBEmotionKeyboard: UIView,WBEmotionTabBarDelegate {
         get{
             if(self._emojiListView == nil){
                 self._emojiListView = WBEmotionListView()
-                let path=NSBundle.mainBundle().pathForResource("EmotionIcons/emoji/info", ofType: "plist")
-                self._emojiListView!.emotions=WBEmotion.objectArrayWithKeyValuesArray(NSArray(contentsOfFile: path!))
+                self._emojiListView!.emotions=WBEmotionTool.emojiEmotions
             }
             return self._emojiListView!
         }
@@ -71,8 +69,7 @@ class WBEmotionKeyboard: UIView,WBEmotionTabBarDelegate {
         get{
             if(self._lxhListView == nil){
                 self._lxhListView = WBEmotionListView()
-                let path=NSBundle.mainBundle().pathForResource("EmotionIcons/lxh/info.plist", ofType: nil)
-                self._lxhListView!.emotions=WBEmotion.objectArrayWithKeyValuesArray(NSArray(contentsOfFile: path!))
+                self._lxhListView!.emotions=WBEmotionTool.lxhEmotions
             }
             return self._lxhListView!
         }

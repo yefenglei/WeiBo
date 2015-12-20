@@ -15,15 +15,16 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
         
         self.tableView.backgroundColor=CommonHelper.Color(211, g: 211, b: 211, a: 1)
         //获取用户信息（昵称）
-        setupUserInfo();
+        setupUserInfo()
         //设置导航栏内容
-        setupNav();
+        setupNav()
         // 集成下拉刷新控件
         self.setupDownRefresh()
         
         // 集成上拉刷新控件
         self.setupUpRefresh()
         
+        // 获得未读微博数
 //        let timer=NSTimer.scheduledTimerWithTimeInterval(NSTimeInterval(10), target: self, selector: "setupUnreadCount", userInfo: nil, repeats: true)
 //        NSRunLoop.mainRunLoop().addTimer(timer, forMode: NSRunLoopCommonModes)
     }
@@ -55,10 +56,10 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
     ///  UIRefreshControl进入刷新状态：加载最新的数据
     ///
     ///  - parameter control: 下拉刷新控件
-    func loadNewStatus(control:UIRefreshControl){
+    func loadNewStatus(){
         // 1.拼接请求参数
         let account=WBAccountTool.account!
-        let params=NSMutableDictionary()
+        var params=Dictionary<String,String>()
         params["access_token"]=account.access_token
         
         //取出最前面的微博（最新的微博，ID最大的微博）
@@ -67,11 +68,11 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
             // 若指定此参数，则返回ID比since_id大的微博（即比since_id时间晚的微博），默认为0
             params["since_id"]=firstStatusF!.status.idstr
         }
-        // 2.发送请求
-        WBHttpTool.get("https://api.weibo.com/2/statuses/friends_timeline.json", params: params, success: { (responseObject) -> Void in
-            // 请求成功
+        
+        // 定义一个block处理返回的字典数据
+        let dealingResult={ (statuses:NSArray)-> Void in
             // 将 "微博字典"数组 转为 "微博模型"数组
-            let newStatuses:NSMutableArray=WBStatus.objectArrayWithKeyValuesArray(responseObject["statuses"])
+            let newStatuses:NSMutableArray=WBStatus.objectArrayWithKeyValuesArray(statuses)
             // 将 HWStatus数组 转为 HWStatusFrame数组
             let newFrames=WBStatusFrame.statusFrames(newStatuses)
             
@@ -82,15 +83,33 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
             
             // 刷新表格
             self.tableView.reloadData()
-            
             // 结束刷新
-            control.endRefreshing()
+            self.tableView.mj_header.endRefreshing()
+            
             
             //显示最新微博的数量
             self.showNewStatusCount(newStatuses.count)
-            }) { (error) -> Void in
-                // 请求失败
-                control.endRefreshing()
+        }
+        
+        // 2.先尝试从数据库中加载微博数据
+        let statuses:NSArray=WBStatusTool.statuses(params)
+        if(statuses.count>0){
+            // 数据库有缓存数据
+            dealingResult(statuses)
+        }else{
+            // 发送请求
+            WBHttpTool.get("https://api.weibo.com/2/statuses/friends_timeline.json", params: params, success: { (responseObject) -> Void in
+                // 请求成功
+                // 将数据保存到本地
+                let responseData=responseObject["statuses"] as! [NSDictionary]
+                WBStatusTool.saveStatuses(responseData)
+                dealingResult(responseData)
+                
+                }) { (error) -> Void in
+                    // 请求失败
+                    // 结束刷新
+                    self.tableView.mj_header.endRefreshing()
+            }
         }
     }
     
@@ -98,7 +117,7 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
     func loadMoreStatus(){
         // 1.拼接请求参数
         let account=WBAccountTool.account
-        let params=NSMutableDictionary()
+        var params=Dictionary<String,String>()
         params["access_token"]=account?.access_token
         
         // 取出最后面的微博（最新的微博，ID最大的微博）
@@ -110,11 +129,10 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
             params["max_id"]=maxId.description
         }
         
-        // 2.发送请求
-        WBHttpTool.get("https://api.weibo.com/2/statuses/friends_timeline.json", params: params, success: { (responseObject) -> Void in
-            // 将 "微博字典"数组 转为 "微博模型"数组
-            let newStatuses=WBStatus.objectArrayWithKeyValuesArray(responseObject["statuses"])
-            // 将 HWStatus数组 转为 HWStatusFrame数组
+        // 处理字典数据
+        let dealingResult={ (statuses:NSArray)-> Void in
+            let newStatuses=WBStatus.objectArrayWithKeyValuesArray(statuses)
+            // 将 WBStatus数组 转为 WBStatusFrame数组
             let newFrames=WBStatusFrame.statusFrames(newStatuses)
             // 将更多的微博数据，添加到总数组的最后面
             self.statusFrames.addObjectsFromArray(newFrames)
@@ -122,8 +140,22 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
             self.tableView.reloadData()
             // 结束刷新(隐藏footer)
             self.tableView.tableFooterView?.hidden=true
-            }) { (error) -> Void in
-                self.tableView.tableFooterView?.hidden=true
+        }
+        // 2.加载沙盒中的数据
+        let statuses=WBStatusTool.statuses(params)
+        if(statuses.count>0){
+            dealingResult(statuses)
+        }else{
+            // 发送请求
+            WBHttpTool.get("https://api.weibo.com/2/statuses/friends_timeline.json", params: params, success: { (responseObject) -> Void in
+                // 缓存新浪返回的字典数组
+                let responseData=responseObject["statuses"] as! [NSDictionary]
+                WBStatusTool.saveStatuses(responseData)
+                dealingResult(responseData)
+                
+                }) { (error) -> Void in
+                    self.tableView.tableFooterView?.hidden=true
+            }
         }
     }
 ///  获得未读数
@@ -155,6 +187,7 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
     
 ///  集成下拉刷新控件
     func setupDownRefresh(){
+        /*
         // 1.添加刷新控件
         let control=UIRefreshControl()
         // 只有用户通过手动下拉刷新，才会触发UIControlEventValueChanged事件
@@ -164,6 +197,11 @@ class WBHomeTableViewController: UITableViewController,WBDropDownMenuDelegate {
         control.beginRefreshing()
         // 3.马上加载数据
         self.loadNewStatus(control)
+        */
+        
+        // 1.添加刷新控件
+        self.tableView.mj_header=MJRefreshNormalHeader(refreshingTarget: self, refreshingAction: Selector("loadNewStatus"))
+        self.tableView.mj_header.beginRefreshing()
     }
     
 ///  集成上拉刷新控件

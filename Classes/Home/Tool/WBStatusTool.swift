@@ -76,4 +76,9 @@ class WBStatusTool: NSObject {
             WBStatusTool.db.executeUpdate("INSERT INTO t_status(status, idstr) VALUES (?, ?);", statusData, status["idstr"]!)
         }
     }
+    
+    /// 移除数据库
+    static func removeDatabase(){
+        WBStatusTool._db=nil
+    }
 }

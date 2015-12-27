@@ -17,8 +17,8 @@ class WBTitleButton: UIButton {
     }
     */
     let WBMargin:CGFloat=5
-    init(){
-        super.init(frame: CGRect.null)
+    override init(frame:CGRect){
+        super.init(frame: frame)
         // 设置文字大小 图片
         self.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal)
         self.titleLabel?.font=UIFont.systemFontOfSize(17)

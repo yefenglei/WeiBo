@@ -27,10 +27,12 @@ class WBProfileTableViewController: UITableViewController {
     /// - parameter UIBarButtonItem: button
     /// - returns: void
     func setClicked(button:UIBarButtonItem){
+        let settingVc=WBSettingViewController()
+        settingVc.navigationItem.title="设置"
         if #available(iOS 8.0, *) {
-            self.navigationController?.showViewController(WBTestViewController(), sender: self)
+            self.navigationController?.showViewController(settingVc, sender: self)
         } else {
-            self.navigationController?.pushViewController(WBTestViewController(), animated: true)
+            self.navigationController?.pushViewController(settingVc, animated: true)
         }
     }
 

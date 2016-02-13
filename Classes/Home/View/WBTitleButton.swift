@@ -52,7 +52,7 @@ class WBTitleButton: UIButton {
         // 1.计算titleLabel的frame]
         self.titleLabel?.x=self.imageView!.x
         // 2.计算imageView的frame
-        self.imageView?.x=CGRectGetMaxX(self.titleLabel!.frame)
+        self.imageView?.x=CGRectGetMaxX(self.titleLabel!.frame)+WBMargin
     }
     
     override func setTitle(title: String?, forState state: UIControlState) {
